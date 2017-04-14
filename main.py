@@ -14,7 +14,11 @@ def main():
     
     try:
         while 1:
-            print('-',can1.read_messages())
+            #print('-',can1.read_messages())
+            print('------------------')
+            for m in can1.read_messages():
+                m.print_me()
+                
             time.sleep(5)
     except KeyboardInterrupt:
         print("CTRL-C detected, attempting to close threads")

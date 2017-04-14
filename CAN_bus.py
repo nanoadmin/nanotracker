@@ -38,11 +38,11 @@ class CANReceiver(threading.Thread):
         self.a_listener = CANListener()
         self.notifier = can.Notifier(self.bus, [self.a_listener])                 
         
-        while self.event.is_set():
+        #while self.event.is_set():
             #print(self.channel, ": creating message")
             ##self.messages.append("new message")
             #print('datamsg', data_messages)
-            time.sleep(self.timer)
+            #time.sleep(self.timer)
             
     #----------------------------------------------------------------------
     def read_messages(self):
@@ -53,7 +53,17 @@ class CANReceiver(threading.Thread):
         #deletes the contents of the recived_messages list so it can be repopulated
         del(data_messages[:])
         
-        return messages
+        #grabs the unique ID's
+        unique_ids = list({m.arbitration_id for m in messages})
+        
+        #iterates through the ID's and gets the first instance of each unique one
+        unique_messages = []
+        for i in unique_ids:
+            loop_msg = next( obj for obj in messages if obj.arbitration_id == i)
+            unique_messages.append(loop_msg)
+            #loop_msg.printme()        
+        
+        return unique_messages
 
 
 class CANMessage:
@@ -64,7 +74,7 @@ class CANMessage:
         self.arbitration_id = msg.arbitration_id
         self.data = msg.data
         
-    def printme(self):
+    def print_me(self):
         print(self.msg)
         
     def __key(self):
