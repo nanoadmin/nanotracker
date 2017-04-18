@@ -2,6 +2,12 @@ import threading
 import time
 import CAN_bus
 
+
+import sys
+
+
+print (sys.version)
+
 #----------------------------------------------------------------------
 def main():
     """Main Application"""
@@ -9,18 +15,28 @@ def main():
     event = threading.Event()
     event.set()
     
-    can1 = CAN_bus.CANReceiver('can1', event, 2)
+    can1 = CAN_bus.CANReceiver('can1', event, 1)
     can1.start()
     
     try:
         while 1:
             #print('-',can1.read_messages())
             
-            print('------------------')
-            for m in can1.read_messages():
-                m.print_me()
+            print('#####################')
+
+            messages = can1.read_messages()
+            post_str = ""
+            for ts in sorted(messages.keys()):
+                #print('------------------')
+                #print(ts)
+                post_str += "Time: " + ts + "\n"
+                for msg in messages[ts]:
+                    #print(msg)
+                    post_str += str(msg) + "\n"
                 
+            print(post_str)
             time.sleep(5)
+            
     except KeyboardInterrupt:
         print("CTRL-C detected, attempting to close threads")
         
@@ -37,10 +53,6 @@ main();
 #import socket
 #import time
 #import os
-#import sys
-
-
-#print (sys.version)
 
 
 #print("app started")
