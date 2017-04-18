@@ -8,6 +8,8 @@ import sys
 
 print (sys.version)
 
+DEVICE_ID = "device123"
+
 #----------------------------------------------------------------------
 def main():
     """Main Application"""
@@ -25,11 +27,11 @@ def main():
             print('#####################')
 
             messages = can1.read_messages()
-            post_str = ""
+            post_str = "deviceid:" + DEVICE_ID + "\n"
             for ts in sorted(messages.keys()):
                 #print('------------------')
                 #print(ts)
-                post_str += "Time: " + ts + "\n"
+                post_str += "time:" + ts + "\n"
                 for msg in messages[ts]:
                     #print(msg)
                     post_str += str(msg) + "\n"
