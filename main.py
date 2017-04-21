@@ -187,9 +187,9 @@ def main():
         
         print("threads closed")
         
-    #except:
-        #print("Unexpected error:", sys.exc_info()[0])
-        #pass    
+    except:
+        print("Unexpected error:", sys.exc_info()[0])
+        pass    
         
 # Run the Application        
 main()
