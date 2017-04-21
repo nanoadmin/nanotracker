@@ -3,15 +3,11 @@ import glob
 import threading
 import time
 import copy
+import smbus
 
-os.system('sudo modprobe w1-gpio')
-os.system('sudo modprobe w1-therm')
-base_dir = '/sys/bus/w1/devices/'
-device_folder = glob.glob(base_dir + '28*')[0]
-device_file = device_folder + '/w1_slave'
 
 ########################################################################
-class TempReader(threading.Thread):
+class VoltReader(threading.Thread):
     """"""
 
     #----------------------------------------------------------------------
@@ -33,7 +29,7 @@ class TempReader(threading.Thread):
             
             ts = str(time.time()).split(".")[0]
                 
-            self.messages[ts] = self.read_temp()
+            self.messages[ts] = self.read_voltage()
             
             time.sleep(self.timer)
             
@@ -46,25 +42,31 @@ class TempReader(threading.Thread):
         return messages            
     
     #----------------------------------------------------------------------
-    def read_temp(self):
-        temp_string = []
-        Line = str(self.read_temp_raw())
-        #    Fline = Line
-        #    while lines[0].strip()[-3:] != 'YES':
-        #        time.sleep(0.2)
-        #        lines = read_temp_raw()
-        #        equals_pos = lines[1].find('t=')
-        #    if equals_pos != -1:
-        #        temp_string = lines[1][equals_pos+2:]
-        temp_string.append(Line[(Line.find("t=")+2):(len(Line)-4)])
-        temp_c = float(temp_string[0]) / 1000.0
-        #    temp_f = temp_c * 9.0 / 5.0 + 32.0
-        return temp_c#, temp_f
-    
-    
-    #----------------------------------------------------------------------
-    def read_temp_raw(self):
-        f = open(device_file, 'r')
-        lines = f.readlines()
-        f.close()
-        return lines    
+    def read_voltage(self):
+
+        # Get I2C bus
+        bus = smbus.SMBus(1)
+        
+        # ADS1115 address, 0x48(72)
+        # Select configuration register, 0x01(01)
+        #		0x8483(33923)	AINP = AIN0 and AINN = AIN1, +/- 2.048V
+        #				Continuous conversion mode, 128SPS
+        data = [0x84,0x83]
+        bus.write_i2c_block_data(0x48, 0x01, data)
+        
+        time.sleep(0.5)
+        
+        # ADS1115 address, 0x48(72)
+        # Read data back from 0x00(00), 2 bytes
+        # raw_adc MSB, raw_adc LSB
+        data = bus.read_i2c_block_data(0x48, 0x00, 2)
+        
+        # Convert the data
+        raw_adc = data[0] * 256 + data[1]
+        
+        if raw_adc > 32767:
+            raw_adc -= 65535
+        
+        # Output data to screen
+        #print("Digital Value of Analog Input : %d" % (raw_adc))   
+        return raw_adc
