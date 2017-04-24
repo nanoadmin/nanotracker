@@ -1,6 +1,6 @@
 import threading
 import time
-import CAN_bus
+import CAN_reader
 import temp_reader
 import volt_reader
 import requests
