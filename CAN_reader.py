@@ -6,6 +6,8 @@ import copy
 import os
     
 ########################################################################
+## Class to listen for message events and add them to an array
+########################################################################
 class CANListener(can.Listener):
     
     def __init__(self):
@@ -23,6 +25,8 @@ class CANListener(can.Listener):
         self.messages = []
         
 ########################################################################
+## Class to initialize the can bus interface and listeners. 
+########################################################################
 class CANReceiver(threading.Thread):
     """CAN Receiver"""
 
@@ -39,9 +43,12 @@ class CANReceiver(threading.Thread):
         self.unique_messages = {}
         
         print("connecting to can interface")
+        # Make sure the interface is running
         os.system('sudo /sbin/ip link set {0} up type can bitrate {1}'.format(self.channel, self.bitrate))
+        
         time.sleep(1)
         
+        # Initialize the CAN interface object
         self.bus = can.interface.Bus(channel=self.channel, bustype='socketcan_native')
         self.a_listener = CANListener() 
         self.notifier = can.Notifier(self.bus, [self.a_listener])
@@ -51,12 +58,8 @@ class CANReceiver(threading.Thread):
         """Run Function - runs when thread.start() is called"""               
         
         while self.event.is_set():
-            
-            ##creates a DEEP copy of the message list
-            #messages = data_messages[:]
-            ##deletes the contents of the recived_messages list so it can be repopulated
-            #del(data_messages[:])
-            
+                      
+            # Get and clear all the messages from the listener
             buffered_messages = self.a_listener.get_messages()
             self.a_listener.clear_messages()
             
@@ -70,9 +73,8 @@ class CANReceiver(threading.Thread):
                 if date_str not in self.unique_messages:
                     self.unique_messages[date_str] = []
                     
-                self.unique_messages[date_str].append(loop_msg) 
-                
-                #self.unique_messages.append(loop_msg)            
+                # store the unique messages in a dictionary with timestamp index
+                self.unique_messages[date_str].append(loop_msg)         
             
             time.sleep(self.timer)
             
@@ -84,35 +86,21 @@ class CANReceiver(threading.Thread):
         self.unique_messages.clear()
         return messages
     
-        ##creates a DEEP copy of the message list
-        #messages = data_messages[:]
-        ##deletes the contents of the recived_messages list so it can be repopulated
-        #del(data_messages[:])
-        
-        ##grabs the unique ID's
-        #unique_ids = list({m.arbitration_id for m in messages})
-        
-        ##iterates through the ID's and gets the first instance of each unique one
-        #unique_messages = []
-        #for i in unique_ids:
-            #loop_msg = next( obj for obj in messages if obj.arbitration_id == i)
-            #unique_messages.append(loop_msg)
-            ##loop_msg.printme()        
-        
-        #return unique_messages
  
+########################################################################
+## Wrapper class for the CAN library's can.Message library
 ########################################################################
 class CANMessage():
     
     def __init__(self,msg):
-        self.msg = msg
+        self.msg = msg  # the original <can.Message> object
         self.datetime = datetime.datetime.fromtimestamp(msg.timestamp).strftime('%Y-%m-%d %H:%M:%S')
         self.timestamp = str(msg.timestamp).split(".")[0]
         self.arbitration_id = msg.arbitration_id
         self.data = msg.data
     
-    def get_timestamp(self):
-        return datetime.datetime.fromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S')
+    #def get_timestamp(self):
+        #return datetime.datetime.fromtimestamp(self.timestamp).strftime('%Y-%m-%d %H:%M:%S')
         
     def print_me(self):
         print(self.msg)
