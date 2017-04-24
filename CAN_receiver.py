@@ -62,14 +62,3 @@ class CanReceiver:
                 loop_msg.printme()
             
             time.sleep(TIME_BETWEEN_MESSAGES_SEC)        
-        
-    
-    
-
-
-
- 
-
-
-
-

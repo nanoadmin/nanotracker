@@ -3,6 +3,7 @@ import time
 import CAN_reader
 import temp_reader
 import volt_reader
+import acc_reader
 import requests
 
 import sys
@@ -49,9 +50,13 @@ class NanoSoftReader:
         self.temp = temp_reader.TempReader(self.event, 1)
         self.temp.start()
         
-        # Create the Voltag Reader Thread
+        # Create the Voltage Reader Thread
         self.volt = volt_reader.VoltReader(self.event, 1)
-        self.volt.start()          
+        self.volt.start()   
+        
+        # Create the GPS Reader Thread
+        self.acc = acc_reader.AccReader(self.event, 1)
+        self.acc.start()
         
         
     #----------------------------------------------------------------------
@@ -150,11 +155,13 @@ class NanoSoftReader:
         """Caches the data to file"""
         temp_messages = self.temp.read_messages()
         volt_messages = self.volt.read_messages()
+        acc_messages = self.acc.read_messages()
                 
         # extract all the unique timestamps from each message dictionary
         timestamps = sorted(set(
             list(volt_messages.keys()) + 
-            list(temp_messages.keys())))
+            list(temp_messages.keys()) +
+            list(acc_messages.keys())))
         
         for ts in timestamps:
             other_data_file.write("time:" + ts + "\n")
@@ -165,7 +172,11 @@ class NanoSoftReader:
         
             # check if there is a volt for this timestamp
             if ts in volt_messages:   
-                other_data_file.write("volt:" + str(volt_messages[ts]) + "\n")             
+                other_data_file.write("volt:" + str(volt_messages[ts]) + "\n")   
+        
+            # check if there is a volt for this timestamp
+            if ts in acc_messages:   
+                other_data_file.write("axis:" + str(acc_messages[ts]) + "\n")            
 
     #----------------------------------------------------------------------
     # Function to check if the sub threads are still alive and if not, 
@@ -194,7 +205,13 @@ class NanoSoftReader:
             print('ERROR: voltage_reader not alive, restarting')
             self.event.set()
             self.volt = volt_reader.VoltReader(self.event, 1)
-            self.volt.start()      
+            self.volt.start()        
+            
+        if (not self.acc.is_alive()):
+            print('ERROR: acc_reader not alive, restarting')
+            self.event.set()
+            self.acc = acc_reader.AccReader(self.event, 1)
+            self.acc.start() 
     
     #----------------------------------------------------------------------
     # Main application loop
@@ -250,12 +267,13 @@ class NanoSoftReader:
             self.can1.join()
             self.temp.join()
             self.volt.join()
+            self.acc.join()
             
             print("threads closed")
             
-        except:
-            print("Unexpected error:", str(sys.exc_info()[0]))
-            pass    
+        #except:
+            #print("Unexpected error:", str(sys.exc_info()[0]))
+            #pass    
    
    
 # Create the application   
