@@ -3,6 +3,7 @@ import time
 import datetime
 import can
 import copy
+import os
     
 ########################################################################
 class CANListener(can.Listener):
@@ -26,17 +27,21 @@ class CANReceiver(threading.Thread):
     """CAN Receiver"""
 
     #----------------------------------------------------------------------
-    def __init__(self, channel, event, timer):
+    def __init__(self, channel, bitrate, event, timer):
         """Constructor"""
         
         threading.Thread.__init__(self)
         
         self.channel = channel
+        self.bitrate = bitrate
         self.event = event
         self.timer = timer
         self.unique_messages = {}
         
         print("connecting to can interface")
+        os.system('sudo /sbin/ip link set {0} up type can bitrate {1}'.format(self.channel, self.bitrate))
+        time.sleep(1)
+        
         self.bus = can.interface.Bus(channel=self.channel, bustype='socketcan_native')
         self.a_listener = CANListener() 
         self.notifier = can.Notifier(self.bus, [self.a_listener])

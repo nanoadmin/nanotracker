@@ -136,9 +136,9 @@ def main():
     open(OTHER_DATA_FILE, 'w').close()    
     
     # Create the CAN Reader Threads
-    can0 = CAN_bus.CANReceiver('can0', event, 1)
+    can0 = CAN_reader.CANReceiver('can0', '125000', event, 1)
     can0.start()    
-    can1 = CAN_bus.CANReceiver('can1', event, 1)
+    can1 = CAN_reader.CANReceiver('can1', '500000', event, 1)
     can1.start()
 
     # Create the Temp Reader Thread

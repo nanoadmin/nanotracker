@@ -1,1 +1,4 @@
-auto01_can_data.txt
+__pycache__/
+*.py[cod]
+*.txt
+
