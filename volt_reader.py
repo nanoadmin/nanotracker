@@ -69,4 +69,4 @@ class VoltReader(threading.Thread):
         
         # Output data to screen
         #print("Digital Value of Analog Input : %d" % (raw_adc))   
-        return raw_adc
+        return raw_adc/1000
