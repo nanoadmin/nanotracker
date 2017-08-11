@@ -1,9 +1,9 @@
 import threading
 import time
 import CAN_reader
-import temp_reader 
-import volt_reader
-import acc_reader
+#import temp_reader TODO: uncomment out these 
+#import volt_reader
+#import acc_reader
 import requests
 import nanotracker_config as config
 import os
@@ -32,16 +32,16 @@ class NanoSoftReader:
         
         #TODO: uncomment outr below
         # Create the Temp Reader Threadssh pi
-        self.temp = temp_reader.TempReader(self.event, 1)
-        self.temp.start()
+        #self.temp = temp_reader.TempReader(self.event, 1)
+        #self.temp.start()
 
         # Create the Voltage Reader Thread
-        self.volt = volt_reader.VoltReader(self.event, 1)
-        self.volt.start()
+        #self.volt = volt_reader.VoltReader(self.event, 1)
+        #self.volt.start()
 
         # Create the GPS Reader Thread
-        self.acc = acc_reader.AccReader(self.event, 1)
-        self.acc.start()
+        #self.acc = acc_reader.AccReader(self.event, 1)
+        #self.acc.start()
 
     # ----------------------------------------------------------------------
     # Function to POST the CAN data to the API from the cache file.
@@ -395,23 +395,23 @@ class NanoSoftReader:
             self.can1 = CAN_reader.CANReceiver(CAN1_NAME, CAN1_BITRATE, self.event, 1)
             self.can1.start()
 
-        if not self.temp.is_alive():
-            print('ERROR: temp_reader thread not alive, restarting')
-            self.event.set()
-            self.temp = temp_reader.TempReader(self.event, 1)
-            self.temp.start()
+        #if not self.temp.is_alive():
+        #    print('ERROR: temp_reader thread not alive, restarting')
+        #    self.event.set()
+        #    self.temp = temp_reader.TempReader(self.event, 1)
+        #    self.temp.start()
 
-        if not self.volt.is_alive():
-            print('ERROR: voltage_reader not alive, restarting')
-            self.event.set()
-            self.volt = volt_reader.VoltReader(self.event, 1)
-            self.volt.start()
+        #if not self.volt.is_alive():
+        #    print('ERROR: voltage_reader not alive, restarting')
+        #    self.event.set()
+        #    self.volt = volt_reader.VoltReader(self.event, 1)
+        #    self.volt.start()
 
-        if not self.acc.is_alive():
-            print('ERROR: acc_reader not alive, restarting')
-            self.event.set()
-            self.acc = acc_reader.AccReader(self.event, 1)
-            self.acc.start()
+        #if not self.acc.is_alive():
+        #    print('ERROR: acc_reader not alive, restarting')
+        #    self.event.set()
+        #    self.acc = acc_reader.AccReader(self.event, 1)
+        #    self.acc.start()
 
     # ----------------------------------------------------------------------
     # Main application loop
@@ -432,7 +432,7 @@ class NanoSoftReader:
                 self.check_alive()
     
                 self.post_CAN_data()
-                self.post_other_data() 
+                #self.post_other_data() TODO:remove this commented out code
 
                 # with open(CAN_DATA_FILE, 'a+') as can_data_file, \
                 #      open(OTHER_DATA_FILE, 'a+') as other_data_file:
