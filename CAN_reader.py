@@ -28,7 +28,8 @@ class CANListener(can.Listener):
 ## Class to initialize the can bus interface and listeners. 
 ########################################################################
 class CANReceiver(threading.Thread):
-    """CAN Receiver"""
+    """CAN Receiver"""   
+
 
     #----------------------------------------------------------------------
     def __init__(self, channel, bitrate, event, timer):
@@ -42,42 +43,66 @@ class CANReceiver(threading.Thread):
         self.timer = timer
         self.unique_messages = {}
         
-        print("connecting to can interface")
         # Make sure the interface is running
-        os.system('sudo /sbin/ip link set {0} up type can bitrate {1}'.format(self.channel, self.bitrate))
+        print("connecting to can interface")                
+        self.ReEstablishConnection()
+        
+        
+    #----------------------------------------------------------------------
+    def ReEstablishConnection(self):
+        """Tries to ensure the canX socket is on-line"""
+        
+        print("attempting to establish the connection to the CAN interface: {0}".format(self.channel))
+        
+        # brings the socket down
+        osCmdDown = 'sudo ifconfig {0} down'.format(self.channel)
+        print(osCmdDown)
+        os.system(osCmdDown)
+        
+        # Make sure the interface is running, brings socket back up 
+        osCmdUp = 'sudo /sbin/ip link set {0} up type can bitrate {1}'.format(self.channel, self.bitrate)
+        print(osCmdUp)
+        os.system(osCmdUp)
         
         time.sleep(1)
-        
+    
         # Initialize the CAN interface object
         self.bus = can.interface.Bus(channel=self.channel, bustype='socketcan_native')
         self.a_listener = CANListener() 
-        self.notifier = can.Notifier(self.bus, [self.a_listener])
+        self.notifier = can.Notifier(self.bus, [self.a_listener])        
         
     #----------------------------------------------------------------------
     def run(self):
         """Run Function - runs when thread.start() is called"""               
         
         while self.event.is_set():
-                      
-            # Get and clear all the messages from the listener
-            buffered_messages = self.a_listener.get_messages()
-            self.a_listener.clear_messages()
             
-            #grabs the unique ID's
-            unique_ids = list({m.arbitration_id for m in buffered_messages})
-            
-            #iterates through the ID's and gets the first instance of each unique one
-            for i in unique_ids:
-                loop_msg = next( obj for obj in buffered_messages if obj.arbitration_id == i)
-                date_str = loop_msg.timestamp
-                if date_str not in self.unique_messages:
-                    self.unique_messages[date_str] = []
-                    
-                # store the unique messages in a dictionary with timestamp index
-                self.unique_messages[date_str].append(loop_msg)         
-            
-            time.sleep(self.timer)
-            
+            try:
+                
+                # Get and clear all the messages from the listener
+                buffered_messages = self.a_listener.get_messages()
+                self.a_listener.clear_messages()
+                
+                #grabs the unique ID's
+                unique_ids = list({m.arbitration_id for m in buffered_messages})
+                
+                #iterates through the ID's and gets the first instance of each unique one
+                for i in unique_ids:
+                    loop_msg = next( obj for obj in buffered_messages if obj.arbitration_id == i)
+                    date_str = loop_msg.timestamp
+                    if date_str not in self.unique_messages:
+                        self.unique_messages[date_str] = []
+                        
+                    # store the unique messages in a dictionary with timestamp index
+                    self.unique_messages[date_str].append(loop_msg)                  
+                
+                time.sleep(self.timer)
+                
+            except:
+                
+                self.ReEstablishConnection()
+                
+                
     #----------------------------------------------------------------------
     def read_messages(self):
         """Reads the messages in the array"""

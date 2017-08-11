@@ -1,38 +1,18 @@
 import threading
 import time
 import CAN_reader
-import temp_reader
-import volt_reader
-import acc_reader
+#import temp_reader TODO: uncomment out these 
+#import volt_reader
+#import acc_reader
 import requests
-
+import nanotracker_config as config
 import os
 import sys
 import traceback
 
 print (sys.version)
 
-DEVICE_ID = "auto01"
-CACHE_FILE_PATH = "/home/pi/Desktop/Zagro/"
-CAN_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_can_data.txt"
-OTHER_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_other_data.txt"
-# CAN_RECEIVER_API = "http://demo.nanosoft.com.au:8082/api/canreceiver"
-CAN_RECEIVER_API = "http://188.166.243.212:1234/api/canreceiver"
-DATA_RECEIVER_API = "http://188.166.243.212:1234/api/datareceiver"
-API_POST_TIMER = 5  # number of seconds between each post request to the api
-
-CAN0_NAME = 'can0'
-CAN0_BITRATE = 125000
-CAN1_NAME = 'can1'
-CAN1_BITRATE = 500000
-
-MAX_CACHE_READ_LINES = 1000   # the number of lines in the cache file to read for posting
-
-REQUEST_HEADERS = {
-    'cache-control': "no-cache",
-    'Content-Type': 'text/plain'
-}
-
+#config files are 
 
 class NanoSoftReader:
     def __init__(self):
@@ -41,26 +21,27 @@ class NanoSoftReader:
         self.event.set()
 
         # make sure the cache files are empty to start with (may not want to do this???)
-        open(CAN_DATA_FILE, 'w').close()
-        open(OTHER_DATA_FILE, 'w').close()
+        open(config.CAN_DATA_FILE, 'w').close()
+        open(config.OTHER_DATA_FILE, 'w').close()
 
         # Create the CAN Reader Threads
-        self.can0 = CAN_reader.CANReceiver(CAN0_NAME, CAN0_BITRATE, self.event, 1)
+        self.can0 = CAN_reader.CANReceiver(config.CAN0_NAME, config.CAN0_BITRATE, self.event, 1)
         self.can0.start()
-        self.can1 = CAN_reader.CANReceiver(CAN1_NAME, CAN1_BITRATE, self.event, 1)
+        self.can1 = CAN_reader.CANReceiver(config.CAN1_NAME, config.CAN1_BITRATE, self.event, 1)
         self.can1.start()
-
-        # Create the Temp Reader Thread
-        self.temp = temp_reader.TempReader(self.event, 1)
-        self.temp.start()
+        
+        #TODO: uncomment outr below
+        # Create the Temp Reader Threadssh pi
+        #self.temp = temp_reader.TempReader(self.event, 1)
+        #self.temp.start()
 
         # Create the Voltage Reader Thread
-        self.volt = volt_reader.VoltReader(self.event, 1)
-        self.volt.start()
+        #self.volt = volt_reader.VoltReader(self.event, 1)
+        #self.volt.start()
 
         # Create the GPS Reader Thread
-        self.acc = acc_reader.AccReader(self.event, 1)
-        self.acc.start()
+        #self.acc = acc_reader.AccReader(self.event, 1)
+        #self.acc.start()
 
     # ----------------------------------------------------------------------
     # Function to POST the CAN data to the API from the cache file.
@@ -69,11 +50,28 @@ class NanoSoftReader:
     #        the file is too large
     # ----------------------------------------------------------------------
     def post_CAN_data(self):
-        print('posting CAN Data')
+        
+        print('reading CAN Data')
 
         # Get the messages from the sub threads
         can0_messages = self.can0.read_messages()
         can1_messages = self.can1.read_messages()
+        
+        print('\'{0}\' has {1} values \n\'{2}\' has {3} values'.format(self.can0.channel, len(can0_messages) 
+                                                                     ,self.can1.channel, len(can1_messages) ))        
+        
+        
+        #if one CANbus has messages but the other does not, then the bus may be down
+        can0HasMessages = len(can0_messages) > 0
+        can1HasMessages = len(can1_messages) > 0
+        
+        if can0HasMessages and not can1HasMessages:
+            self.can1.ReEstablishConnection()
+            
+        if can1HasMessages and not can0HasMessages:
+            self.can0.ReEstablishConnection()      
+        
+        
 
         # extract all the unique timestamps from each message dictionary
         timestamps = sorted(set(
@@ -99,7 +97,7 @@ class NanoSoftReader:
                     new_msg_string += str(msg) + "\n"
 
         # Check to see if there is anything in the cache file
-        if os.stat(CAN_DATA_FILE).st_size > 0:
+        if os.stat(config.CAN_DATA_FILE).st_size > 0:
             print("Data already exists in cache file")
             lines_to_read = []
 
@@ -107,10 +105,10 @@ class NanoSoftReader:
             self.cache_CAN_data(new_msg_string)
 
             # Now read N lines of data from the beginning of the file, and remove those lines
-            with open(CAN_DATA_FILE) as f, open(CACHE_FILE_PATH + 'tmp_can_cache.txt', 'w') as out:
+            with open(config.CAN_DATA_FILE) as f, open(config.CACHE_FILE_PATH + 'tmp_can_cache.txt', 'w') as out:
 
                 # read the top MAX_CACHE_READ_LINES to array
-                for x in range(MAX_CACHE_READ_LINES):
+                for x in range(config.MAX_CACHE_READ_LINES):
                     line = next(f, None)
                     if line is None:        # end of file
                         break
@@ -122,8 +120,8 @@ class NanoSoftReader:
                     out.write(line)
 
             # rename the temp file as the cache file
-            os.remove(CAN_DATA_FILE)
-            os.rename(CACHE_FILE_PATH + 'tmp_can_cache.txt', CAN_DATA_FILE)
+            os.remove(config.CAN_DATA_FILE)
+            os.rename(config.CACHE_FILE_PATH + 'tmp_can_cache.txt', config.CAN_DATA_FILE)
 
             # join the array of lines together to form the message_str
             msg_string = "".join(lines_to_read)
@@ -134,8 +132,8 @@ class NanoSoftReader:
         try:
             # Attempt to post data if string is not empty
             if msg_string:
-                post_data = "deviceid:" + DEVICE_ID + "\n" + msg_string
-                response = requests.post(CAN_RECEIVER_API, data=post_data, headers=REQUEST_HEADERS)
+                post_data = "deviceid:" + config.DEVICE_ID + "\n" + msg_string
+                response = requests.post(config.CAN_RECEIVER_API, data=post_data, headers=config.REQUEST_HEADERS)
 
                 if (response.status_code == 200):
                     print(' - success')
@@ -209,7 +207,7 @@ class NanoSoftReader:
                 new_msg_string += "axis:" + str(acc_messages[ts]) + "\n"
 
         # Check to see if there is anything in the cache file
-        if os.stat(OTHER_DATA_FILE).st_size > 0:
+        if os.stat(config.OTHER_DATA_FILE).st_size > 0:
             print("Data already exists in cache file")
             lines_to_read = []
 
@@ -217,10 +215,10 @@ class NanoSoftReader:
             self.cache_other_data(new_msg_string)
 
             # Now read N lines of data from the beginning of the file, and remove those lines
-            with open(OTHER_DATA_FILE) as f, open(CACHE_FILE_PATH + 'tmp_other_cache.txt', 'w') as out:
+            with open(config.OTHER_DATA_FILE) as f, open(config.CACHE_FILE_PATH + 'tmp_other_cache.txt', 'w') as out:
 
                 # read the top MAX_CACHE_READ_LINES to array
-                for x in range(MAX_CACHE_READ_LINES):
+                for x in range(config.MAX_CACHE_READ_LINES):
                     line = next(f, None)
                     if line is None:        # end of file
                         break
@@ -232,8 +230,8 @@ class NanoSoftReader:
                     out.write(line)
 
             # rename the temp file as the cache file
-            os.remove(OTHER_DATA_FILE)
-            os.rename(CACHE_FILE_PATH + 'tmp_other_cache.txt', OTHER_DATA_FILE)
+            os.remove(config.OTHER_DATA_FILE)
+            os.rename(config.CACHE_FILE_PATH + 'tmp_other_cache.txt', config.OTHER_DATA_FILE)
 
             # join the array of lines together to form the message_str
             msg_string = "".join(lines_to_read)
@@ -244,8 +242,8 @@ class NanoSoftReader:
         try:
             # Attempt to post data if string is not empty
             if msg_string:
-                post_data = "deviceid:" + DEVICE_ID + "\n" + msg_string
-                response = requests.post(DATA_RECEIVER_API, data=post_data, headers=REQUEST_HEADERS)
+                post_data = "deviceid:" + config.DEVICE_ID + "\n" + msg_string
+                response = requests.post(config.DATA_RECEIVER_API, data=post_data, headers=REQUEST_HEADERS)
 
                 if (response.status_code == 200):
                     print(' - success')
@@ -312,7 +310,7 @@ class NanoSoftReader:
         """Caches the data to file"""
         
         print("Saving data to file")
-        can_data_file = open(CAN_DATA_FILE, 'a+')
+        can_data_file = open(config.CAN_DATA_FILE, 'a+')
         can_data_file.write(msg_string)
         can_data_file.close()
 
@@ -351,7 +349,7 @@ class NanoSoftReader:
         """Caches the data to file"""
 
         print("Saving data to file")
-        other_data_file = open(OTHER_DATA_FILE, 'a+')
+        other_data_file = open(config.OTHER_DATA_FILE, 'a+')
         other_data_file.write(msg_string)
         other_data_file.close()
 
@@ -397,23 +395,23 @@ class NanoSoftReader:
             self.can1 = CAN_reader.CANReceiver(CAN1_NAME, CAN1_BITRATE, self.event, 1)
             self.can1.start()
 
-        if not self.temp.is_alive():
-            print('ERROR: temp_reader thread not alive, restarting')
-            self.event.set()
-            self.temp = temp_reader.TempReader(self.event, 1)
-            self.temp.start()
+        #if not self.temp.is_alive():
+        #    print('ERROR: temp_reader thread not alive, restarting')
+        #    self.event.set()
+        #    self.temp = temp_reader.TempReader(self.event, 1)
+        #    self.temp.start()
 
-        if not self.volt.is_alive():
-            print('ERROR: voltage_reader not alive, restarting')
-            self.event.set()
-            self.volt = volt_reader.VoltReader(self.event, 1)
-            self.volt.start()
+        #if not self.volt.is_alive():
+        #    print('ERROR: voltage_reader not alive, restarting')
+        #    self.event.set()
+        #    self.volt = volt_reader.VoltReader(self.event, 1)
+        #    self.volt.start()
 
-        if not self.acc.is_alive():
-            print('ERROR: acc_reader not alive, restarting')
-            self.event.set()
-            self.acc = acc_reader.AccReader(self.event, 1)
-            self.acc.start()
+        #if not self.acc.is_alive():
+        #    print('ERROR: acc_reader not alive, restarting')
+        #    self.event.set()
+        #    self.acc = acc_reader.AccReader(self.event, 1)
+        #    self.acc.start()
 
     # ----------------------------------------------------------------------
     # Main application loop
@@ -427,13 +425,14 @@ class NanoSoftReader:
         try:
 
             while 1:
+                
                 print('#####################')
 
                 # check to see if threads are alive
                 self.check_alive()
-
+    
                 self.post_CAN_data()
-                self.post_other_data()
+                #self.post_other_data() TODO:remove this commented out code
 
                 # with open(CAN_DATA_FILE, 'a+') as can_data_file, \
                 #      open(OTHER_DATA_FILE, 'a+') as other_data_file:
@@ -447,7 +446,7 @@ class NanoSoftReader:
                 #     self.post_other_data(other_data_file)
 
                 # sleep
-                time.sleep(API_POST_TIMER)
+                time.sleep(config.API_POST_TIMER)
 
 
         except KeyboardInterrupt:
