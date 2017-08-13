@@ -173,7 +173,7 @@ class NanoSoftReader:
 
     # ----------------------------------------------------------------------
     # Function to POST the other data (temperature, voltage, [GPS,Accelerometer] to the API
-    # Upon a 200 response, the file will be cleared.
+    # Upon a 200 response, the file will be cleared.pa
     # @TODO: Set a limit on the length of the file to read in case 
     #        the file is too large
     # ----------------------------------------------------------------------
@@ -462,9 +462,10 @@ class NanoSoftReader:
 
             print("threads closed")
 
-        except:
+        except AppError as error:
             print("Unexpected error:", str(sys.exc_info()[0]))
             traceback.print_exc()
+            raise
             # pass
 
 
