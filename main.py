@@ -258,8 +258,9 @@ class NanoSoftReader:
 
             # write msg_str to file
             self.cache_other_data(msg_string)
+            raise
 
-            # traceback.print_exc()
+            traceback.print_exc()
             pass  # don't stop script
 
             # try:
