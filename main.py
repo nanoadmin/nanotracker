@@ -463,7 +463,7 @@ class NanoSoftReader:
 
             print("threads closed")
 
-        except AppError as error:
+        except:
             print("Unexpected error:", str(sys.exc_info()[0]))
             traceback.print_exc()
             raise
