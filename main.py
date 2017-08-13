@@ -243,7 +243,7 @@ class NanoSoftReader:
             # Attempt to post data if string is not empty
             if msg_string:
                 post_data = "deviceid:" + config.DEVICE_ID + "\n" + msg_string
-                response = requests.post(config.DATA_RECEIVER_API, data=post_data, headers=REQUEST_HEADERS)
+                response = requests.post(config.DATA_RECEIVER_API, data=post_data, headers=config.REQUEST_HEADERS)
 
                 if (response.status_code == 200):
                     print(' - success')
