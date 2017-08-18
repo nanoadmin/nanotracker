@@ -8,6 +8,7 @@ import requests
 import nanotracker_config as config
 import os
 import sys
+import utm
 import traceback
 
 print (sys.version)
@@ -467,6 +468,24 @@ class NanoSoftReader:
             traceback.print_exc()
             # pass
 
+# 160817,071509.000,True,3153.5183,S,11555.5019,E #taken from skpang gps module output
+
+
+
+    
+    
+
+nrth = '3153.5190'
+east = '11555.5028'
+directn = 'S'
+#170817,060704.000,True,3153.5190,S,11555.5028,E
+
+
+
+
+
+#x = utm.conversion.to_latlon(11555.5019, 3153.5183, 50, zone_letter=None, 
+#                        northern=False, strict=True)
 
 # Create the application   
 app = NanoSoftReader()

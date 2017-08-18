@@ -12,6 +12,7 @@
 import math
 import time
 import serial
+import utm
 
 PORT = "/dev/ttyS0"
 BAUD = 9600
@@ -139,11 +140,24 @@ try:
 
     if now > next_report:
       next_report = now + REPORT_RATE
-      values =  date,timestamp,locked,northing, northing_flag, easting, easting_flag
+      values =  date,timestamp,locked,northing, northing_flag, easting, easting_flag     
+      
+      if northing != '':
+          
+          longitude = utm.conversion.getDegreesFromStr(northing,northing_flag)
+          lattitude = utm.conversion.getDegreesFromStr(easting,easting_flag)          
+          vals = 'latlong:',longitude,lattitude
+          print_csv(vals)
+      
       print_csv(values)
 
-    gps_data = get_next_message()
+    gps_data = get_next_message()   
+    
+    
     if gps_data is not None:
+        
+      #print(gps_data)
+        
       parts = gps_data.split(',')
       rec_type = parts[0]
       if rec_type == "$GPRMC":
