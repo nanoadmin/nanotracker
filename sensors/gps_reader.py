@@ -5,6 +5,8 @@ import copy
 import smbus
 
 
+
+
 ########################################################################
 class GpsReader(threading.Thread):
     """"""

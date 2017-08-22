@@ -13,6 +13,8 @@
 import os
 import glob
 import time
+
+
 os.system('sudo modprobe w1-gpio')
 os.system('sudo modprobe w1-therm')
 base_dir = '/sys/bus/w1/devices/'

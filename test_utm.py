@@ -235,3 +235,4 @@ if __name__ == '__main__':
     unittest.main()
 
 
+"Tries to ensure the canX socket is on-line"
