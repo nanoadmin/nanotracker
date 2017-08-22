@@ -69,8 +69,7 @@ class NanoSoftReader:
             self.can1.ReEstablishConnection()
             
         if can1HasMessages and not can0HasMessages:
-            self.can0.ReEstablishConnection()      
-        
+            self.can0.ReEstablishConnection()              
         
 
         # extract all the unique timestamps from each message dictionary

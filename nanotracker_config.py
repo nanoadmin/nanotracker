@@ -7,7 +7,7 @@ OTHER_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_other_data.txt"
 
                    
 CAN_RECEIVER_API = "http://demo.nanosoft.com.au:9000/api/canreceiver"# old port : 8082
-DATA_RECEIVER_API = "http://demo.nanosoft.com.au:9000/api/datareceiver"
+DATA_RECEIVER_API = "http://demo.nanosoft.com.au:9000/api/canreceiver"
 
 
 API_POST_TIMER = 5  # number of seconds between each post request to the api
