@@ -1,6 +1,8 @@
 import math
 from utm.error import OutOfRangeError
 
+import re
+
 __all__ = ['to_latlon', 'from_latlon']
 
 K0 = 0.9996
@@ -30,6 +32,48 @@ P5 = (1097. / 512 * _E4)
 R = 6378137
 
 ZONE_LETTERS = "CDEFGHJKLMNPQRSTUVWXX"
+
+
+#added by dg may need testing - weird conversions needed from GPS chip output
+def getDegreesFromStr(bearing, direction):
+    
+    splitStr = bearing.split('.')
+    
+    degrees  = splitStr[0][:len(splitStr[0])-2]
+    minutes  = splitStr[0][-2:]
+    seconds  = float('0.' + splitStr[1])    
+    seconds = 60  * seconds
+    
+    return dms2dd(degrees, minutes, seconds, direction)
+    
+
+
+
+
+
+#added by dg, may need testing
+def dms2dd(degrees, minutes, seconds, direction):
+    dd = float(degrees) + float(minutes)/60 + float(seconds)/(60*60);
+    if direction == 'S' or direction == 'W':
+        dd *= -1
+    return dd;
+
+#added by dg, may need testing
+def dd2dms(deg):
+    d = int(deg)
+    md = abs(deg - d) * 60
+    m = int(md)
+    sd = (md - m) * 60
+    return [d, m, sd]
+
+#added by dg, may need testing
+def parse_dms(dms):
+    parts = re.split('[^\d\w]+', dms)
+    lat = dms2dd(parts[0], parts[1], parts[2], parts[3])
+    lng = dms2dd(parts[4], parts[5], parts[6], parts[7])
+
+    return (lat, lng)
+
 
 
 def to_latlon(easting, northing, zone_number, zone_letter=None, northern=None, strict=True):
