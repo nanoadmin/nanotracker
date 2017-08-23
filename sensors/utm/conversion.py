@@ -59,7 +59,7 @@ def dms2dd(degrees, minutes, seconds, direction):
     return dd;
 
 #added by dg, may need testing
-def dd2dms(deg):
+def dd2dms(deg):named
     d = int(deg)
     md = abs(deg - d) * 60
     m = int(md)

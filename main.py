@@ -1,20 +1,25 @@
+#imported libs
+
 import threading
 import time
-import CAN_reader
-import temp_reader 
-import volt_reader
-import acc_reader
 import requests
-import nanotracker_config as config
 import os
 import sys
 import traceback
 
+#import custom libs
+
+from  sensors import CAN_reader
+from  sensors import temp_reader
+from  sensors import volt_reader
+from  sensors import acc_reader
+
+import nanotracker_config as config
 
 
+#print the python version (more needed for troubleshooting with WINGED IDE)
 print (sys.version)
 
-#config files are 
 
 class NanoSoftReader:
     def __init__(self):

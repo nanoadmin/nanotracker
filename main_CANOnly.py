@@ -1,6 +1,6 @@
 import threading
 import time
-import CAN_reader
+import sensors.CAN_reader as CAN_reader
 #import temp_reader TODO: uncomment out these 
 #import volt_reader
 #import acc_reader
@@ -8,7 +8,7 @@ import requests
 import nanotracker_config as config
 import os
 import sys
-import utm
+#import sensors.utm 
 import traceback
 
 print (sys.version)
@@ -16,6 +16,7 @@ print (sys.version)
 #config files are 
 
 class NanoSoftReader:
+    
     def __init__(self):
         # Create an event object used to send events to sub-threads
         self.event = threading.Event()
