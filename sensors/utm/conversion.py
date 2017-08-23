@@ -59,14 +59,14 @@ def dms2dd(degrees, minutes, seconds, direction):
     return dd;
 
 #added by dg, may need testing
-def dd2dms(deg):named
+def dd2dms(deg):
     d = int(deg)
     md = abs(deg - d) * 60
     m = int(md)
     sd = (md - m) * 60
     return [d, m, sd]
 
-#added by dg, may need testing
+#added by dg, may need testingnanoCan
 def parse_dms(dms):
     parts = re.split('[^\d\w]+', dms)
     lat = dms2dd(parts[0], parts[1], parts[2], parts[3])

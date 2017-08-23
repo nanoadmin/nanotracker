@@ -2,7 +2,9 @@ import os
 import glob
 import threading
 import time
+from . import nanoCan
 import copy
+
 
 os.system('sudo modprobe w1-gpio')
 os.system('sudo modprobe w1-therm')
@@ -45,8 +47,11 @@ class TempReader(threading.Thread):
         self.messages.clear()
         return messages            
     
+    
+    
     #----------------------------------------------------------------------
     def read_temp(self):
+        
         temp_string = []
         Line = str(self.read_temp_raw())
         #    Fline = Line
@@ -56,10 +61,14 @@ class TempReader(threading.Thread):
         #        equals_pos = lines[1].find('t=')
         #    if equals_pos != -1:
         #        temp_string = lines[1][equals_pos+2:]
-        temp_string.append(Line[(Line.find("t=")+2):(len(Line)-4)])
+        temp_string.append(Line[(Line.find("t=")+2):(len(Line)-4)])      
         temp_c = float(temp_string[0]) / 1000.0
+        
         #    temp_f = temp_c * 9.0 / 5.0 + 32.0
-        return temp_c#, temp_f
+        
+        canbusVal =  nanoCan.converter.MessageConverter.TempConvert(temp_c)
+        
+        return canbusVal#, temp_f
     
     
     #----------------------------------------------------------------------

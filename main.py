@@ -199,18 +199,19 @@ class NanoSoftReader:
         new_msg_string = ""
         for ts in timestamps:
             new_msg_string += "time:" + ts + "\n"
+            new_msg_string += "can:nano1000\n"
 
             # check if there is a temp for this timestamp
             if ts in temp_messages:
-                new_msg_string += "temp:" + str(temp_messages[ts]) + "\n"
+                new_msg_string +=  str(temp_messages[ts]) + "\n"
 
                 # check if there is a volt for this timestamp
-            if ts in volt_messages:
-                new_msg_string += "volt:" + str(volt_messages[ts]) + "\n"
+            #if ts in volt_messages:
+            #    new_msg_string += "volt:" + str(volt_messages[ts]) + "\n"
 
                 # check if there is a volt for this timestamp
-            if ts in acc_messages:
-                new_msg_string += "axis:" + str(acc_messages[ts]) + "\n"
+            #if ts in acc_messages:
+            #    new_msg_string += "axis:" + str(acc_messages[ts]) + "\n"
 
         # Check to see if there is anything in the cache file
         if os.stat(config.OTHER_DATA_FILE).st_size > 0:
@@ -264,9 +265,9 @@ class NanoSoftReader:
 
             # write msg_str to file
             self.cache_other_data(msg_string)
-            raise
+            #raise
 
-            traceback.print_exc()
+            #traceback.print_exc()
             pass  # don't stop script
 
             # try:

@@ -5,10 +5,6 @@ import binascii
 ########################################################################
 class MessageConverter:
     """Collection of static methods etc which can be used to convert messages to CAN like hex values"""
-
-    #----------------------------------------------------------------------
-    def __init__(self):
-        """Constructor"""
         
     def DateConvert(thisDate):
         
@@ -21,7 +17,7 @@ class MessageConverter:
         offset = -40
 
         #apply offset and resolution, then get hex value
-        retStr = MessageConverter.ConvertNumberToHex(tempVal,resolution,offset,4)
+        retStr = '0001 ' +  MessageConverter.ConvertNumberToHex(tempVal,resolution,offset,4)
         
         return retStr
 
