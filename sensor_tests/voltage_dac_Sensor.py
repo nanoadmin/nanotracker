@@ -137,7 +137,8 @@ while(count <= 20):
         Data = [0xC2,0x83]
         bus.write_i2c_block_data(BusAddress, ConfigReg, Data)
 
-        time.sleep(ConversionDelay)raw_adc -= 655
+        time.sleep(ConversionDelay)
+
 
         # ADS1115 address, 0x48(72)
         # Read data back from 0x00(00), 2 bytes
