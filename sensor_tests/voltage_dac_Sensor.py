@@ -125,8 +125,8 @@ print ("Digital Value of Analog Input on Channel-3: ",raw_adc)
 ###############################################################################
 
 count = 0
-VoltageFactor1 = 25/32767
-VoltageFactor2 = 5.1/32767
+VoltageFactor1 = 14.90/20283
+VoltageFactor2 = 5.1/17495
 
 while(count <= 20):
         count += 1
