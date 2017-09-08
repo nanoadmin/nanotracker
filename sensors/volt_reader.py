@@ -31,6 +31,8 @@ class VoltReader(threading.Thread):
         
         self.messages = {}
         
+        self.prevValVoltBatt = None
+        self.prevValVoltPI = None
     
     #----------------------------------------------------------------------
     def run(self):
@@ -38,36 +40,21 @@ class VoltReader(threading.Thread):
         
         while self.event.is_set():  
             
-            #grab the temperature
-            #currTemp = self.read_temp()
-            
-            #check if the temperature has changed since last read, if first run then mark as changed
-            #tempHasChanged = self.prevVal is None or currTemp != self.prevVal
-            
-            
-            
-            #self.prevVal = currTemp
-            
-            #if tempHasChanged:
-                
-            #    ts = str(time.time()).split(".")[0]
-            #    nano1000Val = nanoCan.converter.MessageConverter.TempConvert(currTemp)
-            #    self.messages[ts] = nano1000Val            
-            
-            
-            
-            # need to set up the server code for receiving the voltage values 
-            # need to do exception and compression with sending a value every X seconds (maybe add that as a config value)
-            
-            
+                      
             ts = str(time.time()).split(".")[0]                       
             
-            volt_batt = self.read_voltage([0xC2,0x83],self.Voltfactor_Battery)
-            volt_pi = self.read_voltage([0xE2,0x83],self.VoltFactor_PI)            
-                            
-            nanoCanVal = nanoCan.converter.MessageConverter.VoltConvert(volt_pi,volt_batt)
+            volt_batt = round(self.read_voltage([0xC2,0x83],self.Voltfactor_Battery),2)
+            volt_pi = round(self.read_voltage([0xE2,0x83],self.VoltFactor_PI),2)
             
-            self.messages[ts] = nanoCanVal           
+            isnewVal = (self.prevValVoltBatt is not None and self.prevValVoltPI is not None ) or self.prevValVoltBatt != volt_batt or self.prevValVoltPI != volt_pi
+            
+            if isnewVal:
+                
+                self.prevValVoltBatt = volt_batt
+                self.prevValVoltPI = volt_pi
+                
+                nanoCanVal = nanoCan.converter.MessageConverter.VoltConvert(volt_pi,volt_batt)            
+                self.messages[ts] = nanoCanVal           
             
             
             time.sleep(self.timer)
