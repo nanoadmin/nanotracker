@@ -25,7 +25,7 @@ class TempReader(threading.Thread):
         self.timer = timer
         
         self.messages = {}
-        
+        self.prevVal = None
     
     #----------------------------------------------------------------------
     def run(self):
@@ -33,10 +33,20 @@ class TempReader(threading.Thread):
         
         while self.event.is_set():  
             
-            ts = str(time.time()).split(".")[0]
-                
-            self.messages[ts] = self.read_temp()
+            #grab the temperature
+            currTemp = self.read_temp()
             
+            #check if the temperature has changed since last read, if first run then mark as changed
+            tempHasChanged = self.prevVal is None or currTemp != self.prevVal
+            
+            self.prevVal = currTemp
+            
+            if tempHasChanged:
+                
+                ts = str(time.time()).split(".")[0]
+                nano1000Val = nanoCan.converter.MessageConverter.TempConvert(currTemp)
+                self.messages[ts] = nano1000Val
+                        
             time.sleep(self.timer)
             
     #----------------------------------------------------------------------
@@ -64,11 +74,10 @@ class TempReader(threading.Thread):
         temp_string.append(Line[(Line.find("t=")+2):(len(Line)-4)])      
         temp_c = float(temp_string[0]) / 1000.0
         
-        #    temp_f = temp_c * 9.0 / 5.0 + 32.0
+        #    temp_f = temp_c * 9.0 / 5.0 + 32.0       
         
-        canbusVal =  nanoCan.converter.MessageConverter.TempConvert(temp_c)
         
-        return canbusVal#, temp_f
+        return temp_c#, temp_f
     
     
     #----------------------------------------------------------------------

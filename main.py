@@ -23,6 +23,8 @@ print (sys.version)
 
 class NanoSoftReader:
     def __init__(self):
+        
+        
         # Create an event object used to send events to sub-threads
         self.event = threading.Event()
         self.event.set()
@@ -43,13 +45,18 @@ class NanoSoftReader:
         self.temp.start()
 
         # Create the Voltage Reader Thread
-        self.volt = volt_reader.VoltReader(self.event, 1)
+        self.volt = volt_reader.VoltReader(self.event, 1,config.VOLTFACTOR_BATTERY,config.VOLTFACTOR_PI)
         self.volt.start()
 
         # Create the GPS Reader Thread
         self.acc = acc_reader.AccReader(self.event, 1)
         self.acc.start()
+        
+        self.lastRestartTime = int(time.time())
 
+    
+    
+    
     # ----------------------------------------------------------------------
     # Function to POST the CAN data to the API from the cache file.
     # Upon a 200 response, the file will be cleared.
@@ -67,15 +74,19 @@ class NanoSoftReader:
         print('\'{0}\' has {1} values \n\'{2}\' has {3} values'.format(self.can0.channel, len(can0_messages) 
                                                                      ,self.can1.channel, len(can1_messages) ))        
         
+        #if it has been more than X seconds since the last can restart then we
+        #would restart the can interface if there are no values AND the other can device is returning values
+        secondsSinceLastRestart = int(time.time()) - self.lastRestartTime
+        deadCanbusGracePeriodExceeded = secondsSinceLastRestart >= 10
         
         #if one CANbus has messages but the other does not, then the bus may be down
         can0HasMessages = len(can0_messages) > 0
         can1HasMessages = len(can1_messages) > 0
         
-        if can0HasMessages and not can1HasMessages:
+        if can0HasMessages and not can1HasMessages and deadCanbusGracePeriodExceeded:
             self.can1.ReEstablishConnection()
             
-        if can1HasMessages and not can0HasMessages:
+        if can1HasMessages and not can0HasMessages and deadCanbusGracePeriodExceeded:
             self.can0.ReEstablishConnection()              
         
 

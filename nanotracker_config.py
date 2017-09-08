@@ -19,6 +19,10 @@ CAN1_BITRATE = 500000
 
 MAX_CACHE_READ_LINES = 1000   # the number of lines in the cache file to read for posting
 
+VOLTFACTOR_BATTERY = 14.90/20283
+VOLTFACTOR_PI = 5.1/17495
+
+
 REQUEST_HEADERS = {
     'cache-control': "no-cache",
     'Content-Type': 'text/plain'

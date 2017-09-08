@@ -10,6 +10,18 @@ class MessageConverter:
         
         return "not implemented"
     
+    def VoltConvert(voltage_pi, voltage_batt):
+        
+        #below values taken from the CAN_MessageDefinitions
+        resolution = 0.03125 
+        offset = 0
+        
+        voltpiCANVal = MessageConverter.ConvertNumberToHex(voltage_pi,resolution,offset,4)
+        voltBAttCANVal = MessageConverter.ConvertNumberToHex(voltage_batt,resolution,offset,4)
+        
+        return voltpiCANVal + voltBAttCANVal
+        
+    
     def TempConvert(tempVal):
         
         #below values taken from the CAN_MessageDefinitions

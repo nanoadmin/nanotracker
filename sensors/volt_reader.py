@@ -4,16 +4,27 @@ import threading
 import time
 import copy
 import smbus
+from . import nanoCan
 
 
 ########################################################################
 class VoltReader(threading.Thread):
     """"""
+    
+    BusAddress = 0x48       #I2C Address of the ADS1115 wich can be adjuseted to 0x49,50 or 51
+    ConversionDelay = 0.4   #Delay to alow for the ADC to perform the conversion
+    ConversionReg = 0x00
+    ConfigReg = 0x01    
+    
 
     #----------------------------------------------------------------------
-    def __init__(self, event, timer):
+    def __init__(self, event, timer, voltFctr_battery, voltFctr_PI):
         """Constructor"""
-        threading.Thread.__init__(self)
+        
+        self.Voltfactor_Battery = voltFctr_battery
+        self.VoltFactor_PI = voltFctr_PI              
+        
+        threading.Thread.__init__(self)                     
         
         self.event = event
         self.timer = timer
@@ -27,9 +38,37 @@ class VoltReader(threading.Thread):
         
         while self.event.is_set():  
             
-            ts = str(time.time()).split(".")[0]
+            #grab the temperature
+            #currTemp = self.read_temp()
+            
+            #check if the temperature has changed since last read, if first run then mark as changed
+            #tempHasChanged = self.prevVal is None or currTemp != self.prevVal
+            
+            
+            
+            #self.prevVal = currTemp
+            
+            #if tempHasChanged:
                 
-            self.messages[ts] = self.read_voltage()
+            #    ts = str(time.time()).split(".")[0]
+            #    nano1000Val = nanoCan.converter.MessageConverter.TempConvert(currTemp)
+            #    self.messages[ts] = nano1000Val            
+            
+            
+            
+            # need to set up the server code for receiving the voltage values 
+            # need to do exception and compression with sending a value every X seconds (maybe add that as a config value)
+            
+            
+            ts = str(time.time()).split(".")[0]                       
+            
+            volt_batt = self.read_voltage([0xC2,0x83],self.Voltfactor_Battery)
+            volt_pi = self.read_voltage([0xE2,0x83],self.VoltFactor_PI)            
+                            
+            nanoCanVal = nanoCan.converter.MessageConverter.VoltConvert(volt_pi,volt_batt)
+            
+            self.messages[ts] = nanoCanVal           
+            
             
             time.sleep(self.timer)
             
@@ -42,31 +81,25 @@ class VoltReader(threading.Thread):
         return messages            
     
     #----------------------------------------------------------------------
-    def read_voltage(self):
+    def read_voltage(self, dataArr, multiplier ):
 
         # Get I2C bus
         bus = smbus.SMBus(1)
         
-        # ADS1115 address, 0x48(72)
-        # Select configuration register, 0x01(01)
-        #		0x8483(33923)	AINP = AIN0 and AINN = AIN1, +/- 2.048V
-        #				Continuous conversion mode, 128SPS
-        data = [0x84,0x83]
-        bus.write_i2c_block_data(0x48, 0x01, data)
-        
-        time.sleep(0.5)
-        
+        data = dataArr
+        bus.write_i2c_block_data(VoltReader.BusAddress, VoltReader.ConfigReg, data)
+    
+        time.sleep(VoltReader.ConversionDelay)    
+    
         # ADS1115 address, 0x48(72)
         # Read data back from 0x00(00), 2 bytes
         # raw_adc MSB, raw_adc LSB
-        data = bus.read_i2c_block_data(0x48, 0x00, 2)
-        
+        data = bus.read_i2c_block_data(VoltReader.BusAddress, VoltReader.ConversionReg, 2)
+    
         # Convert the data
-        raw_adc = data[0] * 256 + data[1]
+        raw_adc = data[0] * 256 + data[1]    
+      
+        voltage = raw_adc * multiplier      
+               
         
-        if raw_adc > 32767:
-            raw_adc -= 65535
-        
-        # Output data to screen
-        #print("Digital Value of Analog Input : %d" % (raw_adc))   
-        return raw_adc/1000
+        return voltage

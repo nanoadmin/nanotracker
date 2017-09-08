@@ -52,7 +52,7 @@ print ("Digital Value of Analog Input on Channel-0: ",raw_adc)
 # ADS1115 address, 0x48(72)
 # Select configuration register, 0x01(01)
 #		0xD483(54403)	AINP = AIN1 and AINN = GND, +/- 2.048V
-#				Continuous conversion mode, 128SPS
+#				Continuous conversion mode, 128SPSvoltage_dac_Sensor
 Data = [0xD2,0x83]
 bus.write_i2c_block_data(BusAddress, ConfigReg, Data)
 
@@ -125,8 +125,10 @@ print ("Digital Value of Analog Input on Channel-3: ",raw_adc)
 ###############################################################################
 
 count = 0
-VoltageFactor1 = 14.90/20283
+
+VoltageFactor1 = 14.9/20283
 VoltageFactor2 = 5.1/17495
+
 
 while(count <= 20):
         count += 1
