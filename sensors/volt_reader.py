@@ -3,6 +3,7 @@ import glob
 import threading
 import time
 import copy
+import datetime
 import smbus
 from . import nanoCan
 
@@ -38,6 +39,8 @@ class VoltReader(threading.Thread):
     def run(self):
         """Run Function - runs when thread.start() is called"""               
         
+        lastTimeMessageSent = datetime.datetime.now()
+        
         while self.event.is_set():  
             
                       
@@ -48,7 +51,11 @@ class VoltReader(threading.Thread):
             
             isnewVal = (self.prevValVoltBatt is not None and self.prevValVoltPI is not None ) or self.prevValVoltBatt != volt_batt or self.prevValVoltPI != volt_pi
             
-            if isnewVal:
+            minutesSinceLastSentVal = (datetime.datetime.now() - lastTimeMessageSent).seconds / 60
+            
+            if isnewVal or minutesSinceLastSentVal > 5:
+                
+                lastTimeMessageSent = datetime.datetime.now()
                 
                 self.prevValVoltBatt = volt_batt
                 self.prevValVoltPI = volt_pi

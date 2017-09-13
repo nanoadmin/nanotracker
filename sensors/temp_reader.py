@@ -3,6 +3,7 @@ import glob
 import threading
 import time
 from . import nanoCan
+import datetime
 import copy
 
 
@@ -31,6 +32,8 @@ class TempReader(threading.Thread):
     def run(self):
         """Run Function - runs when thread.start() is called"""               
         
+        lastTimeMessageSent = datetime.datetime.now()
+        
         while self.event.is_set():  
             
             #grab the temperature
@@ -39,10 +42,12 @@ class TempReader(threading.Thread):
             #check if the temperature has changed since last read, if first run then mark as changed
             tempHasChanged = self.prevVal is None or currTemp != self.prevVal
             
-            self.prevVal = currTemp
+            minutesSinceValueSent = (datetime.datetime.now() - lastTimeMessageSent).seconds / 60          
+                       
             
-            if tempHasChanged:
+            if tempHasChanged or ( minutesSinceValueSent >= 2 ) :
                 
+                self.prevVal = currTemp
                 ts = str(time.time()).split(".")[0]
                 nano1000Val = nanoCan.converter.MessageConverter.TempConvert(currTemp)
                 self.messages[ts] = nano1000Val

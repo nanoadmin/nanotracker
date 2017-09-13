@@ -204,8 +204,8 @@ class NanoSoftReader:
         # extract all the unique timestamps from each message dictionary
         timestamps = sorted(set(
             list(volt_messages.keys()) +
-            list(temp_messages.keys()) +
-            list(acc_messages.keys())))
+            list(temp_messages.keys()))) 
+            #list(acc_messages.keys())))
 
         new_msg_string = ""
         for ts in timestamps:
@@ -216,11 +216,11 @@ class NanoSoftReader:
             if ts in temp_messages:
                 new_msg_string +=  str(temp_messages[ts]) + "\n"
 
-                # check if there is a volt for this timestamp
-            #if ts in volt_messages:
-            #    new_msg_string += "volt:" + str(volt_messages[ts]) + "\n"
+            # check if there is a volt for this timestamp
+            if ts in volt_messages:
+                new_msg_string += str(volt_messages[ts]) + "\n"
 
-                # check if there is a volt for this timestamp
+            # check if there is a volt for this timestamp
             #if ts in acc_messages:
             #    new_msg_string += "axis:" + str(acc_messages[ts]) + "\n"
 

@@ -12,14 +12,15 @@ class MessageConverter:
     
     def VoltConvert(voltage_pi, voltage_batt):
         
-        #below values taken from the CAN_MessageDefinitions
-        resolution = 0.03125 
+        #below values taken from the CAN_MessageDefinitions (nano1000, PGN=2 "Voltage", SPN 2&3)
+        resolution = 0.05 
         offset = 0
         
         voltpiCANVal = MessageConverter.ConvertNumberToHex(voltage_pi,resolution,offset,4)
         voltBAttCANVal = MessageConverter.ConvertNumberToHex(voltage_batt,resolution,offset,4)
         
-        return voltpiCANVal + voltBAttCANVal
+        #SPN 2 = Battery Voltage and SPN 3 = PI Voltage so we must return them in that order        
+        return '0002 ' + voltBAttCANVal + voltpiCANVal
         
     
     def TempConvert(tempVal):
