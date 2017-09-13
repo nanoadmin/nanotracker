@@ -32,7 +32,7 @@ class CANReceiver(threading.Thread):
 
 
     #----------------------------------------------------------------------
-    def __init__(self, channel, bitrate, event, timer):
+    def __init__(self, channel, bitrate, event, timer, isEnabled):
         """Constructor"""
         
         threading.Thread.__init__(self)
@@ -43,9 +43,15 @@ class CANReceiver(threading.Thread):
         self.timer = timer
         self.unique_messages = {}
         
+        self.isEnabled = isEnabled
+        
         # Make sure the interface is running
         print("connecting to can interface")                
-        self.ReEstablishConnection()
+        if self.isEnabled: 
+            self.ReEstablishConnection()
+            print("connecting to can interface") 
+        else:
+            print('{0} is not enabled, so we will not try to open the can channel'.format(channel))
         
         
     #----------------------------------------------------------------------
@@ -77,32 +83,33 @@ class CANReceiver(threading.Thread):
         
         while self.event.is_set():
             
-            try:
+            if self.isEnabled:
+            
+                try:
+                    
+                    # Get and clear all the messages from the listener
+                    buffered_messages = self.a_listener.get_messages()
+                    self.a_listener.clear_messages()
+                    
+                    #grabs the unique ID's
+                    unique_ids = list({m.arbitration_id for m in buffered_messages})
+                    
+                    #iterates through the ID's and gets the first instance of each unique one
+                    for i in unique_ids:
+                        loop_msg = next( obj for obj in buffered_messages if obj.arbitration_id == i)
+                        date_str = loop_msg.timestamp
+                        if date_str not in self.unique_messages:
+                            self.unique_messages[date_str] = []
+                            
+                        # store the unique messages in a dictionary with timestamp index
+                        self.unique_messages[date_str].append(loop_msg)    
+                    
+                except:
+                    
+                    self.ReEstablishConnection()
                 
-                # Get and clear all the messages from the listener
-                buffered_messages = self.a_listener.get_messages()
-                self.a_listener.clear_messages()
-                
-                #grabs the unique ID's
-                unique_ids = list({m.arbitration_id for m in buffered_messages})
-                
-                #iterates through the ID's and gets the first instance of each unique one
-                for i in unique_ids:
-                    loop_msg = next( obj for obj in buffered_messages if obj.arbitration_id == i)
-                    date_str = loop_msg.timestamp
-                    if date_str not in self.unique_messages:
-                        self.unique_messages[date_str] = []
-                        
-                    # store the unique messages in a dictionary with timestamp index
-                    self.unique_messages[date_str].append(loop_msg)                  
-                
-                time.sleep(self.timer)
-                
-            except:
-                
-                self.ReEstablishConnection()
-                
-                
+            time.sleep(self.timer)
+            
     #----------------------------------------------------------------------
     def read_messages(self):
         """Reads the messages in the array"""

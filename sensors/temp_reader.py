@@ -47,6 +47,7 @@ class TempReader(threading.Thread):
             
             if tempHasChanged or ( minutesSinceValueSent >= 2 ) :
                 
+                lastTimeMessageSent = datetime.datetime.now()
                 self.prevVal = currTemp
                 ts = str(time.time()).split(".")[0]
                 nano1000Val = nanoCan.converter.MessageConverter.TempConvert(currTemp)

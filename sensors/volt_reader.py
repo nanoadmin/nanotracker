@@ -49,8 +49,19 @@ class VoltReader(threading.Thread):
             volt_batt = round(self.read_voltage([0xC2,0x83],self.Voltfactor_Battery),2)
             volt_pi = round(self.read_voltage([0xE2,0x83],self.VoltFactor_PI),2)
             
-            isnewVal = (self.prevValVoltBatt is not None and self.prevValVoltPI is not None ) or self.prevValVoltBatt != volt_batt or self.prevValVoltPI != volt_pi
+            isnewVal = True
             
+            if (self.prevValVoltBatt is not None and self.prevValVoltPI is not None ) :
+                
+                battDiff = abs((self.prevValVoltBatt / volt_batt) * 100) 
+                piDiff = abs((self.prevValVoltPI / volt_pi) * 100) 
+                
+                batChanged  = (battDiff <= 98) or (battDiff >= 102 )
+                piChanged = (piDiff <= 98) or (piDiff >= 102 )
+                
+                isnewVal = batChanged or piChanged              
+                       
+            #how long since there has been a value change logged 
             minutesSinceLastSentVal = (datetime.datetime.now() - lastTimeMessageSent).seconds / 60
             
             if isnewVal or minutesSinceLastSentVal > 5:

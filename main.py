@@ -34,9 +34,9 @@ class NanoSoftReader:
         open(config.OTHER_DATA_FILE, 'w').close()
 
         # Create the CAN Reader Threads
-        self.can0 = CAN_reader.CANReceiver(config.CAN0_NAME, config.CAN0_BITRATE, self.event, 1)
+        self.can0 = CAN_reader.CANReceiver(config.CAN0_NAME, config.CAN0_BITRATE, self.event, 1,True)#can0 is always active
         self.can0.start()
-        self.can1 = CAN_reader.CANReceiver(config.CAN1_NAME, config.CAN1_BITRATE, self.event, 1)
+        self.can1 = CAN_reader.CANReceiver(config.CAN1_NAME, config.CAN1_BITRATE, self.event, 1, config.IS_DUAL_CAN)
         self.can1.start()
         
         #TODO: uncomment outr below
@@ -79,15 +79,17 @@ class NanoSoftReader:
         secondsSinceLastRestart = int(time.time()) - self.lastRestartTime
         deadCanbusGracePeriodExceeded = secondsSinceLastRestart >= 10
         
-        #if one CANbus has messages but the other does not, then the bus may be down
-        can0HasMessages = len(can0_messages) > 0
-        can1HasMessages = len(can1_messages) > 0
+        if config.IS_DUAL_CAN:            
         
-        if can0HasMessages and not can1HasMessages and deadCanbusGracePeriodExceeded:
-            self.can1.ReEstablishConnection()
+            #if one CANbus has messages but the other does not, then the bus may be down
+            can0HasMessages = len(can0_messages) > 0
+            can1HasMessages = len(can1_messages) > 0
             
-        if can1HasMessages and not can0HasMessages and deadCanbusGracePeriodExceeded:
-            self.can0.ReEstablishConnection()              
+            if can0HasMessages and not can1HasMessages and deadCanbusGracePeriodExceeded:
+                self.can1.ReEstablishConnection()
+                
+            if can1HasMessages and not can0HasMessages and deadCanbusGracePeriodExceeded:
+                self.can0.ReEstablishConnection()              
         
 
         # extract all the unique timestamps from each message dictionary
@@ -333,30 +335,7 @@ class NanoSoftReader:
         can_data_file.write(msg_string)
         can_data_file.close()
 
-        # can0_messages = self.can0.read_messages()
-        # can1_messages = self.can1.read_messages()
-        #
-        # # extract all the unique timestamps from each message dictionary
-        # timestamps = sorted(set(
-        #     list(can0_messages.keys()) +
-        #     list(can1_messages.keys())))
-        #
-        # # write data to file
-        # for ts in timestamps:
-        #
-        #     can_data_file.write("time:" + ts + "\n")
-        #
-        #     # check if there is can0 data for this timestamp
-        #     if ts in can0_messages:
-        #         can_data_file.write("can:Zagro125\n")
-        #         for msg in can0_messages[ts]:
-        #             can_data_file.write(str(msg) + "\n")
-        #
-        #             # check if there is can1 data for this timestamp
-        #     if ts in can1_messages:
-        #         can_data_file.write("can:Zagro500\n")
-        #         for msg in can1_messages[ts]:
-        #             can_data_file.write(str(msg) + "\n")
+    
 
     # ----------------------------------------------------------------------
     # Function to fetch data messages from the sub-threads and write data to
@@ -372,30 +351,7 @@ class NanoSoftReader:
         other_data_file.write(msg_string)
         other_data_file.close()
 
-        # temp_messages = self.temp.read_messages()
-        # volt_messages = self.volt.read_messages()
-        # acc_messages = self.acc.read_messages()
-        #
-        # # extract all the unique timestamps from each message dictionary
-        # timestamps = sorted(set(
-        #     list(volt_messages.keys()) +
-        #     list(temp_messages.keys()) +
-        #     list(acc_messages.keys())))
-        #
-        # for ts in timestamps:
-        #     other_data_file.write("time:" + ts + "\n")
-        #
-        #     # check if there is a temp for this timestamp
-        #     if ts in temp_messages:
-        #         other_data_file.write("temp:" + str(temp_messages[ts]) + "\n")
-        #
-        #         # check if there is a volt for this timestamp
-        #     if ts in volt_messages:
-        #         other_data_file.write("volt:" + str(volt_messages[ts]) + "\n")
-        #
-        #         # check if there is a volt for this timestamp
-        #     if ts in acc_messages:
-        #         other_data_file.write("axis:" + str(acc_messages[ts]) + "\n")
+       
 
     # ----------------------------------------------------------------------
     # Function to check if the sub threads are still alive and if not,
