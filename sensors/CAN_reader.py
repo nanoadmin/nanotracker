@@ -4,6 +4,7 @@ import datetime
 import can
 import copy
 import os
+
     
 ########################################################################
 ## Class to listen for message events and add them to an array

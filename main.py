@@ -13,6 +13,8 @@ from  sensors import CAN_reader
 from  sensors import temp_reader
 from  sensors import volt_reader
 from  sensors import acc_reader
+from  sensors import gps_reader
+
 
 import nanotracker_config as config
 
@@ -48,9 +50,13 @@ class NanoSoftReader:
         self.volt = volt_reader.VoltReader(self.event, 1,config.VOLTFACTOR_BATTERY,config.VOLTFACTOR_PI)
         self.volt.start()
 
-        # Create the GPS Reader Thread
+        # Create the accelerometer Reader Thread
         self.acc = acc_reader.AccReader(self.event, 1)
         self.acc.start()
+        
+        # Create the GPS Reader Thread
+        self.gps = gps_reader.GpsReader(self.event, 1)
+        self.gps.start()        
         
         self.lastRestartTime = int(time.time())
 
@@ -201,11 +207,13 @@ class NanoSoftReader:
 
         temp_messages = self.temp.read_messages()
         volt_messages = self.volt.read_messages()
-        acc_messages = self.acc.read_messages()
+        gps_messages = self.gps.read_messages()
+
 
         # extract all the unique timestamps from each message dictionary
         timestamps = sorted(set(
             list(volt_messages.keys()) +
+            list(gps_messages.keys()) +
             list(temp_messages.keys()))) 
             #list(acc_messages.keys())))
 
@@ -221,6 +229,10 @@ class NanoSoftReader:
             # check if there is a volt for this timestamp
             if ts in volt_messages:
                 new_msg_string += str(volt_messages[ts]) + "\n"
+                
+            # check if there is a volt for this timestamp
+            if ts in gps_messages:
+                new_msg_string += str(gps_messages[ts]) + "\n"            
 
             # check if there is a volt for this timestamp
             #if ts in acc_messages:
@@ -387,6 +399,12 @@ class NanoSoftReader:
             self.event.set()
             self.acc = acc_reader.AccReader(self.event, 1)
             self.acc.start()
+        
+        if not self.gps.is_alive():
+            print('ERROR: acc_reader not alive, restarting')
+            self.event.set()
+            self.gps = gps_reader.GpsReader(self.event, 1)
+            self.gps.start()        
 
     # ----------------------------------------------------------------------
     # Main application loop
@@ -409,17 +427,6 @@ class NanoSoftReader:
                 self.post_CAN_data()
                 self.post_other_data() 
 
-                # with open(CAN_DATA_FILE, 'a+') as can_data_file, \
-                #      open(OTHER_DATA_FILE, 'a+') as other_data_file:
-                #
-                #     # write data to cache files
-                #     self.cache_CAN_data(can_data_file)
-                #     self.cache_other_data(other_data_file)
-                #
-                #     # post data from the cache files
-                #     self.post_CAN_data(can_data_file)
-                #     self.post_other_data(other_data_file)
-
                 # sleep
                 time.sleep(config.API_POST_TIMER)
 
@@ -434,6 +441,7 @@ class NanoSoftReader:
             self.temp.join()
             self.volt.join()
             self.acc.join()
+            self.gps.join()
 
             print("threads closed")
 

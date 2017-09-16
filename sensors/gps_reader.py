@@ -3,8 +3,7 @@ import threading
 import time
 import copy
 import smbus
-
-
+from .gps.microtack_gps import L80GPS
 
 
 ########################################################################
@@ -20,6 +19,8 @@ class GpsReader(threading.Thread):
         self.timer = timer
         
         self.messages = {}
+        
+        self.gps_l80 = L80GPS()
              
         
     
@@ -31,7 +32,7 @@ class GpsReader(threading.Thread):
             
             ts = str(time.time()).split(".")[0]
                 
-            self.messages[ts] = self.read_gps(True)
+            self.messages[ts] = self.read_gps_l80()
             
             time.sleep(self.timer)
             
@@ -43,7 +44,23 @@ class GpsReader(threading.Thread):
         self.messages.clear()
         return messages            
     
-    #----------------------------------------------------------------------
-    def read_gps(self):
+    #------------below must return lat,lng,errMsg,wasErr----------------------------------------------------------
+    def read_gps_l80(self):
+        
+        retObj = ({'latitude':None,
+                    'longitude':None,
+                    'isError':False,
+                    'ErrorMsg':''})
+        try:
+            gpgll = self.gps_l80.get_gpgll()
+            retObj['latitude'] = gpgll['latitude']
+            retObj['longitude'] = gpgll['latitude']
+        except:
+            retObj['isError'] = True
+            retObj['ErrorMsg'] = str(sys.exc_info()[0])
+            
+        return retObj
+    
+    def read_gps_microstack(self):
         
         return ''
