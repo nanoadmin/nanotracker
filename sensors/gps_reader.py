@@ -11,12 +11,14 @@ class GpsReader(threading.Thread):
     """"""
 
     #----------------------------------------------------------------------
-    def __init__(self, event, timer, address=0x53):
+    def __init__(self, event, timer, isSingleCan): #, address=0x53
         """Constructor"""
         threading.Thread.__init__(self)
         
         self.event = event
         self.timer = timer
+        
+        self.isSingleCan = isSingleCan
         
         self.messages = {}
         
@@ -31,9 +33,13 @@ class GpsReader(threading.Thread):
         while self.event.is_set():  
             
             ts = str(time.time()).split(".")[0]
-                
-            self.messages[ts] = self.read_gps_l80()
             
+            if self.isSingleCan:
+                latLng = self.read_gps_l80()
+            else:
+                latLng = self.read_gps_microstack()
+            
+            print ('lat:{0} lng:{1}'.format(  latLng['latitude'],latLng['longitude']))
             time.sleep(self.timer)
             
     #----------------------------------------------------------------------
@@ -63,4 +69,18 @@ class GpsReader(threading.Thread):
     
     def read_gps_microstack(self):
         
-        return ''
+        #need to edit this to actually  return microstack node stuff
+        
+        retObj = ({'latitude':None,
+                       'longitude':None,
+                        'isError':False,
+                        'ErrorMsg':''})
+        try:
+            gpgll = self.gps_l80.get_gpgll()
+            retObj['latitude'] = gpgll['latitude']
+            retObj['longitude'] = gpgll['latitude']
+        except:
+            retObj['isError'] = True
+            retObj['ErrorMsg'] = str(sys.exc_info()[0])
+            
+        return retObj

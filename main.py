@@ -55,7 +55,7 @@ class NanoSoftReader:
         self.acc.start()
         
         # Create the GPS Reader Thread
-        self.gps = gps_reader.GpsReader(self.event, 1)
+        self.gps = gps_reader.GpsReader(self.event, 1, not config.IS_DUAL_CAN)
         self.gps.start()        
         
         self.lastRestartTime = int(time.time())
