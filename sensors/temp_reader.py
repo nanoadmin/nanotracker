@@ -36,8 +36,8 @@ class TempReader(threading.Thread):
         
         while self.event.is_set():  
             
-            #grab the temperature
-            currTemp = self.read_temp()
+            #grab the temperature to the nearest .1 degree
+            currTemp = round(self.read_temp(),1)
             
             #check if the temperature has changed since last read, if first run then mark as changed
             tempHasChanged = self.prevVal is None or currTemp != self.prevVal
