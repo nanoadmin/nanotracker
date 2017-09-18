@@ -9,6 +9,10 @@ Modules include:
 
 """
 import logging
+import sys
+
+sys.path.insert(0, 'can')
+
 log = logging.getLogger('can')
 
 rc = dict(channel=0)

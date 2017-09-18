@@ -1,7 +1,7 @@
 import threading
 import time
 import datetime
-import can
+from . import can
 import copy
 import os
 
