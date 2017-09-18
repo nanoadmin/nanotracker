@@ -315,7 +315,9 @@ def parse_locus_data(data, format='basic'):
             return parsed_data
         else:
             utc = parse_long(data_bytes[:4])
-            checksum = data_bytes[15]
+            checksum = data_bytes[15]gpgll = self.gps_l80.get_gpgll()
+            retObj['latitude'] = gpgll['latitude']
+            retObj['longitude'] = gpgll['latitude']
             if not checksum_is_valid(data_bytes[:15], checksum):
                 # invalid checksum, this datum is useless
                 continue

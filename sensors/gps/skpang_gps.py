@@ -126,6 +126,27 @@ def print_csv(values):
   #log_file.flush()
   print(line)
 
+
+#returns <<lattitude>>,<<longitude>>, <<wasValidMessage>>
+def getLatLong():
+    
+    longitude = 0
+    latitude = 0
+    
+    gps_data = get_next_message()    
+    
+    values =  date,timestamp,locked,northing, northing_flag, easting, easting_flag         
+    
+    if northing != '':
+        
+        longitude = utm.conversion.getDegreesFromStr(northing,northing_flag)
+        lattitude = utm.conversion.getDegreesFromStr(easting,easting_flag)          
+        
+    wasValidMesage = not (longitude == 0)
+    
+    return longitude, latitude, wasValidMesage
+    
+
 REPORT_RATE = 1.0
 date = ""
 

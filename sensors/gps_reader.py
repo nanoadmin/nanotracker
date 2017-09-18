@@ -4,7 +4,7 @@ import time
 import copy
 import smbus
 from .gps.microtack_gps import L80GPS
-
+from  .gps import skpang_gps
 
 ########################################################################
 class GpsReader(threading.Thread):
@@ -75,10 +75,11 @@ class GpsReader(threading.Thread):
                        'longitude':None,
                         'isError':False,
                         'ErrorMsg':''})
+        
         try:
-            gpgll = self.gps_l80.get_gpgll()
-            retObj['latitude'] = gpgll['latitude']
-            retObj['longitude'] = gpgll['latitude']
+            lat,lng = skpang_gps.getLatLong()
+            retObj['latitude'] = lat
+            retObj['longitude'] = lng
         except:
             retObj['isError'] = True
             retObj['ErrorMsg'] = str(sys.exc_info()[0])
