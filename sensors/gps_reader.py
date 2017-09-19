@@ -2,7 +2,7 @@ import os
 import threading
 import time
 import copy
-import smbus
+
 from .gps import skpang_gps
 from .gps.microstack_gps import L80GPS
 
@@ -23,8 +23,7 @@ class GpsReader(threading.Thread):
         
         self.messages = {}
         
-        self.gps_l80 = L80GPS()
-             
+        self.gps_l80 = L80GPS()           
         
     
     #----------------------------------------------------------------------
@@ -52,14 +51,16 @@ class GpsReader(threading.Thread):
         return messages            
     
     #------------below must return lat,lng,errMsg,wasErr----------------------------------------------------------
-    def read_gps_l80(self):
+    def read_gps_skpang(self):
         
         retObj = ({'latitude':None,
                     'longitude':None,
                     'isError':False,
                     'ErrorMsg':''})
         try:
-            gpgll = self.gps_l80.get_gpgll()
+            
+            lat,lng = skpang_gps.getLatLong()
+            
             retObj['latitude'] = gpgll['latitude']
             retObj['longitude'] = gpgll['latitude']
         except:
@@ -78,7 +79,9 @@ class GpsReader(threading.Thread):
                         'ErrorMsg':''})
         
         try:
-            lat,lng = skpang_gps.getLatLong()
+            
+            gpgll = self.gps_l80.get_gpgll()
+            
             retObj['latitude'] = lat
             retObj['longitude'] = lng
         except:
