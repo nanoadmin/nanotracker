@@ -1,11 +1,16 @@
-#imported libs
 
+
+import sys
+#print the python version (more needed for troubleshooting with WINGED IDE)
+print ("Python Version: {0}".format(str(sys.version)))
+
+
+#imported libs
 import threading
 import time
-import requests
 import os
-import sys
 import traceback
+import requests
 
 #import custom libs
 
@@ -18,13 +23,8 @@ from  sensors import gps_reader
 
 import nanotracker_config as config
 
-
-#print the python version (more needed for troubleshooting with WINGED IDE)
-print (sys.version)
-
-
 class NanoSoftReader:
-    def __init__(self):
+    def __init__(self):              
         
         
         # Create an event object used to send events to sub-threads

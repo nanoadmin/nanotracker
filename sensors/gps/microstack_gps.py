@@ -315,7 +315,7 @@ def parse_locus_data(data, format='basic'):
             return parsed_data
         else:
             utc = parse_long(data_bytes[:4])
-            checksum = data_bytes[15]gpgll = self.gps_l80.get_gpgll()
+            checksum = ''#data_bytes[15]gpgll = self.gps_l80.get_gpgll() #-dg i edited this , is it needed
             retObj['latitude'] = gpgll['latitude']
             retObj['longitude'] = gpgll['latitude']
             if not checksum_is_valid(data_bytes[:15], checksum):
@@ -484,7 +484,7 @@ def gpgsv_as_dict(gpgsv_str):
                          'elevation': 05,
                          'azimuth': 060,
                          'snr': 18},
-                        {'id': 02,
+                        {'id': 02,gps_l80
                          'elevation': 17,
                          'azimuth': 259,
                          'snr': 43},

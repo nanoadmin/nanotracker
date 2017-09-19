@@ -1,5 +1,5 @@
 import can
-from can.util import load_config, choose_socketcan_implementation
+from util import load_config, choose_socketcan_implementation
 
 VALID_INTERFACES = set(['kvaser', 'serial', 'pcan', 'socketcan_native',
                                 'socketcan_ctypes', 'socketcan', 'usb2can'])

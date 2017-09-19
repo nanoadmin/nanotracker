@@ -1,13 +1,13 @@
 
 DEVICE_ID = "auto02"
-CACHE_FILE_PATH = "/home/pi/Desktop/Zagro/"
+CACHE_FILE_PATH = "/home/pi/Desktop/cache_files/"
 
 CAN_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_can_data.txt"
 OTHER_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_other_data.txt"
 
 IS_DUAL_CAN = False # if this is the sinlge CAN device then we will mark this as false
                    
-CAN_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"# old port : 8082
+CAN_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"# old/dev port : 8082
 DATA_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"
 
 

@@ -1,5 +1,5 @@
 import math
-from utm.error import OutOfRangeError
+from .error import OutOfRangeError
 
 import re
 

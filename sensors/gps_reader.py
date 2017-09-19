@@ -4,7 +4,7 @@ import time
 import copy
 import smbus
 from .gps import skpang_gps
-from .gps.microtack_gps import L80GPS
+from .gps.microstack_gps import L80GPS
 
 
 ########################################################################
