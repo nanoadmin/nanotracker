@@ -16,8 +16,8 @@ import requests
 
 from  sensors import CAN_reader
 from  sensors import temp_reader
-#from  sensors import volt_reader
-#from  sensors import acc_reader
+from  sensors import volt_reader
+from  sensors import acc_reader
 from  sensors import gps_reader
 
 
