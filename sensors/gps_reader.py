@@ -36,7 +36,7 @@ class GpsReader(threading.Thread):
             ts = str(time.time()).split(".")[0]
             
             if self.isSingleCan:
-                latLng = self.read_gps_l80()
+                latLng = self.read_gps_skpang()
             else:
                 latLng = self.read_gps_microstack()
             
