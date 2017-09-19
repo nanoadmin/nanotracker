@@ -63,8 +63,9 @@ class GpsReader(threading.Thread):
             
             lat,lng = skpang_gps.getLatLong()
             
-            retObj['latitude'] = gpgll['latitude']
-            retObj['longitude'] = gpgll['latitude']
+            retObj['latitude'] = lat
+            retObj['longitude'] = lng
+           
         except:
             retObj['isError'] = True
             retObj['ErrorMsg'] = str(sys.exc_info()[0])
@@ -84,8 +85,9 @@ class GpsReader(threading.Thread):
             
             gpgll = self.gps_microstack.get_gpgll()
             
-            retObj['latitude'] = lat
-            retObj['longitude'] = lng
+            retObj['latitude'] = gpgll['latitude']
+            retObj['longitude'] = gpgll['latitude']
+            
         except:
             retObj['isError'] = True
             retObj['ErrorMsg'] = str(sys.exc_info()[0])
