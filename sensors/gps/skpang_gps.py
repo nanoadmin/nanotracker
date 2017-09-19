@@ -19,6 +19,8 @@ except:
     import utm
 
 
+SHOW_DEMO_DATA = False
+
 PORT = "/dev/ttyS0"
 BAUD = 9600
 
@@ -194,7 +196,7 @@ def getLatLong():
     i = 0 
     
     try:
-      while i <= 50000:
+      while i <= 5000000:
           
         i = i + 1
           
@@ -215,7 +217,8 @@ def getLatLong():
               return vals
     
         gps_data = get_next_message()   
-        #print(str(gps_data))
+        if SHOW_DEMO_DATA and  gps_data is not None:
+            print(str(gps_data))
         
         if gps_data is not None:
             
