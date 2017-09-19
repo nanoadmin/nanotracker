@@ -23,7 +23,8 @@ class GpsReader(threading.Thread):
         
         self.messages = {}
         
-        self.gps_l80 = L80GPS()           
+        if not isSingleCan:
+            self.gps_microstack = L80GPS()           
         
     
     #----------------------------------------------------------------------
@@ -80,7 +81,7 @@ class GpsReader(threading.Thread):
         
         try:
             
-            gpgll = self.gps_l80.get_gpgll()
+            gpgll = self.gps_microstack.get_gpgll()
             
             retObj['latitude'] = lat
             retObj['longitude'] = lng
