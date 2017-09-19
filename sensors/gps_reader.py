@@ -63,6 +63,8 @@ class GpsReader(threading.Thread):
             
             lat,lng = skpang_gps.getLatLong()
             
+            print(str(skpang_gps.getLatLong())
+            
             retObj['latitude'] = lat
             retObj['longitude'] = lng
            
