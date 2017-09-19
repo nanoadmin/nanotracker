@@ -1,6 +1,7 @@
 import os
 import threading
 import time
+import sys
 import copy
 
 from .gps import skpang_gps
@@ -23,7 +24,7 @@ class GpsReader(threading.Thread):
         
         self.messages = {}
         
-        if not isSingleCan:
+        if not self.isSingleCan:
             self.gps_microstack = L80GPS()           
         
     
