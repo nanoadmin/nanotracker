@@ -203,21 +203,20 @@ class NanoSoftReader:
     #        the file is too large
     # ----------------------------------------------------------------------
     def post_other_data(self):
+        
         print('posting other data')
 
         temp_messages = self.temp.read_messages()
         volt_messages = self.volt.read_messages()
-        gps_messages = self.gps.read_messages()
-
-
+        
         # extract all the unique timestamps from each message dictionary
         timestamps = sorted(set(
-            list(volt_messages.keys()) +
-            list(gps_messages.keys()) +
+            list(volt_messages.keys()) +            
             list(temp_messages.keys()))) 
             #list(acc_messages.keys())))
 
         new_msg_string = ""
+        
         for ts in timestamps:
             new_msg_string += "time:" + ts + "\n"
             new_msg_string += "can:nano1000\n"
@@ -228,15 +227,9 @@ class NanoSoftReader:
 
             # check if there is a volt for this timestamp
             if ts in volt_messages:
-                new_msg_string += str(volt_messages[ts]) + "\n"
-                
-            # check if there is a volt for this timestamp
-            if ts in gps_messages:
-                new_msg_string += str(gps_messages[ts]) + "\n"            
-
-            # check if there is a volt for this timestamp
-            #if ts in acc_messages:
-            #    new_msg_string += "axis:" + str(acc_messages[ts]) + "\n"
+                new_msg_string += str(volt_messages[ts]) + "\n"              
+                   
+           
 
         # Check to see if there is anything in the cache file
         if os.stat(config.OTHER_DATA_FILE).st_size > 0:
@@ -295,44 +288,25 @@ class NanoSoftReader:
             #traceback.print_exc()
             pass  # don't stop script
 
-            # try:
-            #     can_data_file.seek(0)
-            #     data = "deviceid:" + DEVICE_ID + "\n" + can_data_file.read()
-            #     response = requests.post(CAN_RECEIVER_API, data=data, headers=REQUEST_HEADERS)
-            # #
-            #     if (response.status_code == 200):
-            #         print(' - success')
-            #         # clear the file if successful post
-            #         open(CAN_DATA_FILE, 'w').close()
-            #     else:
-            #         print(' - failed')
-            #         print('status code: ', response.status_code)
-            #         # don't clear the file
-            # #
-            # except:
-            #     print(' - failed')
-            #     print("Unexpected error:", sys.exc_info()[0])
-            #     pass  # don't stop script
-        # try:
-        #     other_data_file.seek(0)
-        #     data = "deviceid:" + DEVICE_ID + "\n" + other_data_file.read()
-        #     response = requests.post(DATA_RECEIVER_API, data=data, headers=REQUEST_HEADERS)
-        #
-        #     if (response.status_code == 200):
-        #         print(' - success')
-        #         # clear the file if successful post
-        #         open(OTHER_DATA_FILE, 'w').close()
-        #
-        #     else:
-        #         print(' - failed')
-        #         print('status code: ', response.status_code)
-        #         # don't clear the file
-        #         # leave the post toggle
-        # except:
-        #     print(' - failed')
-        #     print("Unexpected error:", sys.exc_info()[0])
-        #     pass  # don't stop script
+  
+   
+    def post_gps_data(self):
+        
+        print('posting other data')
+       
+        gps_messages = self.gps.read_messages()
 
+        # extract all the unique timestamps from each message dictionary
+        timestamps = sorted(set(list(gps_messages.keys())))
+            
+        new_msg_string = ""
+        
+        for key, value in d.items():
+            
+            print (value)
+        
+        
+        
     # ----------------------------------------------------------------------
     # Function to fetch data messages from the sub-threads and write data to 
     # file for caching in case POST requests aren't succesful. 
@@ -340,7 +314,7 @@ class NanoSoftReader:
     #        case the API server goes down for a long period of time.
     # ----------------------------------------------------------------------
     def cache_CAN_data(self, msg_string):
-        """Caches the data to file"""
+        """Caches the can data to file"""
         
         print("Saving data to file")
         can_data_file = open(config.CAN_DATA_FILE, 'a+')
@@ -358,12 +332,20 @@ class NanoSoftReader:
     def cache_other_data(self, msg_string):
         """Caches the data to file"""
 
-        print("Saving data to file")
+        print("Saving other data to file")
         other_data_file = open(config.OTHER_DATA_FILE, 'a+')
         other_data_file.write(msg_string)
         other_data_file.close()
 
-       
+    def cache_gps_data(elf,msg_string):
+        """Caches data to a file"""
+        
+        print ("saving gps data to file")
+        gps_data_file = open(config.GPS_DATA_FILE_, 'a+')
+        gps_data_file.write(msg_string)
+        gps_data_file.close()        
+    
+    
 
     # ----------------------------------------------------------------------
     # Function to check if the sub threads are still alive and if not,

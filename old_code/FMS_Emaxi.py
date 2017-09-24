@@ -195,7 +195,6 @@ def getGPSTime(dateStr, timeStr):
     tempdate = tempdate + timedelta(hours=8)
 
     dt = tempdate.strftime('%d/%b/%y %H:%M:%S')
-
     dt = str.replace(dt,' ','%20')
 
     return dt
