@@ -1,10 +1,12 @@
 import os
 import threading
 import time
+import sys
 import copy
-import smbus
-from .gps.microtack_gps import L80GPS
-from  .gps import skpang_gps
+
+from .gps import skpang_gps
+from .gps.microstack_gps import L80GPS
+
 
 ########################################################################
 class GpsReader(threading.Thread):
@@ -22,8 +24,8 @@ class GpsReader(threading.Thread):
         
         self.messages = {}
         
-        self.gps_l80 = L80GPS()
-             
+        if not self.isSingleCan:
+            self.gps_microstack = L80GPS()           
         
     
     #----------------------------------------------------------------------
@@ -35,7 +37,7 @@ class GpsReader(threading.Thread):
             ts = str(time.time()).split(".")[0]
             
             if self.isSingleCan:
-                latLng = self.read_gps_l80()
+                latLng = self.read_gps_skpang()
             else:
                 latLng = self.read_gps_microstack()
             
@@ -51,16 +53,21 @@ class GpsReader(threading.Thread):
         return messages            
     
     #------------below must return lat,lng,errMsg,wasErr----------------------------------------------------------
-    def read_gps_l80(self):
+    def read_gps_skpang(self):
         
         retObj = ({'latitude':None,
                     'longitude':None,
                     'isError':False,
                     'ErrorMsg':''})
         try:
-            gpgll = self.gps_l80.get_gpgll()
-            retObj['latitude'] = gpgll['latitude']
-            retObj['longitude'] = gpgll['latitude']
+            
+            lat,lng = skpang_gps.getLatLong()
+            
+            print(str(skpang_gps.getLatLong()))
+            
+            retObj['latitude'] = lat
+            retObj['longitude'] = lng
+           
         except:
             retObj['isError'] = True
             retObj['ErrorMsg'] = str(sys.exc_info()[0])
@@ -77,9 +84,12 @@ class GpsReader(threading.Thread):
                         'ErrorMsg':''})
         
         try:
-            lat,lng = skpang_gps.getLatLong()
-            retObj['latitude'] = lat
-            retObj['longitude'] = lng
+            
+            gpgll = self.gps_microstack.get_gpgll()
+            
+            retObj['latitude'] = gpgll['latitude']
+            retObj['longitude'] = gpgll['latitude']
+            
         except:
             retObj['isError'] = True
             retObj['ErrorMsg'] = str(sys.exc_info()[0])

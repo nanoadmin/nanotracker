@@ -4,7 +4,7 @@ import threading
 import time
 import copy
 import datetime
-import smbus
+import smbus 
 from . import nanoCan
 
 

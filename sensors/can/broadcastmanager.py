@@ -4,7 +4,7 @@ Exposes several methods for transmitting cyclic messages.
 20/09/13
 """
 
-import can
+#from can import can
 import abc
 import logging
 

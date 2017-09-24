@@ -12,7 +12,14 @@
 import math
 import time
 import serial
-import utm
+
+try:
+    from . import utm
+except:
+    import utm
+
+
+SHOW_DEMO_DATA = False
 
 PORT = "/dev/ttyS0"
 BAUD = 9600
@@ -128,14 +135,41 @@ def print_csv(values):
 
 
 #returns <<lattitude>>,<<longitude>>, <<wasValidMessage>>
-def getLatLong():
+def getLatLong_old():
     
     longitude = 0
     latitude = 0
     
     gps_data = get_next_message()    
     
-    values =  date,timestamp,locked,northing, northing_flag, easting, easting_flag         
+    locked = False
+    
+    date,timestamp, northing, northing_flag, easting, easting_flag = "","","","","",""
+    
+    
+    
+    if gps_data is not None:        
+       
+        parts = gps_data.split(',')
+        rec_type = parts[0]
+        
+        if rec_type == "$GPRMC":
+          date = parts[9]
+          #print(date)
+        if rec_type == "$GPGSA":
+          lock_flag = parts[1]
+          if lock_flag == 'A':
+            #print("GPS LOCKED")
+            locked = True
+          else:
+            #print("NO GPS LOCK:%s" % lock_flag)
+            locked = False
+    
+        elif rec_type == "$GPGGA":
+          if locked:
+            timestamp, northing, northing_flag, easting, easting_flag = parts[1:6]
+          else:
+            timestamp, northing, northing_flag, easting, easting_flag = "","","","",""    
     
     if northing != '':
         
@@ -147,63 +181,75 @@ def getLatLong():
     return longitude, latitude, wasValidMesage
     
 
-REPORT_RATE = 1.0
-date = ""
+def getLatLong():
 
-next_report = time.time() + REPORT_RATE
-
-locked = False
-date,timestamp, northing, northing_flag, easting, easting_flag = "","","","","",""
-
-try:
-  while True:
-    now = time.time()
-
-    if now > next_report:
-      next_report = now + REPORT_RATE
-      values =  date,timestamp,locked,northing, northing_flag, easting, easting_flag     
-      
-      if northing != '':
+    REPORT_RATE = 1.0
+    date = ""
+    
+    next_report = time.time() + REPORT_RATE
+    
+    locked = False
+    date,timestamp, northing, northing_flag, easting, easting_flag = "","","","","",""
+    
+    vals = None,None,None
+    
+    i = 0 
+    
+    try:
+      while i <= 5000000:
           
-          longitude = utm.conversion.getDegreesFromStr(northing,northing_flag)
-          lattitude = utm.conversion.getDegreesFromStr(easting,easting_flag)          
-          vals = 'latlong:',longitude,lattitude
-          print_csv(vals)
-      
-      print_csv(values)
-
-    gps_data = get_next_message()   
+        i = i + 1
+          
+        now = time.time()
     
+        if now > next_report:
+          next_report = now + REPORT_RATE
+          values =  date,timestamp,locked,northing, northing_flag, easting, easting_flag     
+          
+          if northing != '':
+              
+              longitude = utm.conversion.getDegreesFromStr(northing,northing_flag)
+              lattitude = utm.conversion.getDegreesFromStr(easting,easting_flag)          
+              vals = 'latlong:',longitude,lattitude
+              
+              #print ("found on attempt {0}".format(i))
+              
+              return vals
     
-    if gps_data is not None:
+        gps_data = get_next_message()   
+        if SHOW_DEMO_DATA and  gps_data is not None:
+            print(str(gps_data))
         
-      #print(gps_data)
-        
-      parts = gps_data.split(',')
-      rec_type = parts[0]
-      if rec_type == "$GPRMC":
-        date = parts[9]
-        #print(date)
-      if rec_type == "$GPGSA":
-        lock_flag = parts[1]
-        if lock_flag == 'A':
-          #print("GPS LOCKED")
-          locked = True
-        else:
-          #print("NO GPS LOCK:%s" % lock_flag)
-          locked = False
-
-      elif rec_type == "$GPGGA":
-        if locked:
-          timestamp, northing, northing_flag, easting, easting_flag = parts[1:6]
-        else:
-          timestamp, northing, northing_flag, easting, easting_flag = "","","","",""
-
-except KeyboardInterrupt:
-  #Catch keyboard interrupt
-  outfile.close()
-  #os.system("sudo /sbin/ip link set can0 down")
-  print('\n\rKeyboard interrtupt')
+        if gps_data is not None:
+            
+          #print(gps_data)
+            
+          parts = gps_data.split(',')
+          rec_type = parts[0]
+          if rec_type == "$GPRMC":
+            date = parts[9]
+            #print(date)
+          if rec_type == "$GPGSA":
+            lock_flag = parts[1]
+            if lock_flag == 'A':
+              #print("GPS LOCKED")
+              locked = True
+            else:
+              #print("NO GPS LOCK:%s" % lock_flag)
+              locked = False
+    
+          elif rec_type == "$GPGGA":
+            if locked:
+              timestamp, northing, northing_flag, easting, easting_flag = parts[1:6]
+            else:
+              timestamp, northing, northing_flag, easting, easting_flag = "","","","",""
+    
+    except KeyboardInterrupt:
+      #Catch keyboard interrupt
+      outfile.close()
+      #os.system("sudo /sbin/ip link set can0 down")
+      print('\n\rKeyboard interrtupt')
       
 
 
+#if you want to do testing here, just run the function "testFunction", this will createa  log file of GPS co-ords
