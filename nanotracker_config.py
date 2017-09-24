@@ -4,12 +4,13 @@ CACHE_FILE_PATH = "/home/pi/Desktop/Zagro/"
 
 CAN_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_can_data.txt"
 OTHER_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_other_data.txt"
+GPS_DATA_FILE_ = CACHE_FILE_PATH + DEVICE_ID + "_gps_data.txt"
 
 IS_DUAL_CAN = False # if this is the sinlge CAN device then we will mark this as false
                    
 CAN_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"# old port : 8082
 DATA_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"
-
+GPS_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/dataaccess"
 
 API_POST_TIMER = 5  # number of seconds between each post request to the api
 
