@@ -8,9 +8,13 @@ import copy
 from .gps import skpang_gps
 from .gps.microstack_gps import L80GPS
 
+import nanotracker_config as config 
+
+#match function for lat/long distance calculator
+from math import sin, cos, sqrt, atan2, radians
 
 ########################################################################
-class GpsReader(threading.Thread):
+class GpsReader(threading.Thread):    
     """"""
 
     #----------------------------------------------------------------------
@@ -28,8 +32,9 @@ class GpsReader(threading.Thread):
         if not self.isSingleCan:
             self.gps_microstack = L80GPS()           
         
-        #for exception and compression lat,long,datetime
-        self.LastLatLongTime = None,None,datetime.datetime.now()
+        #for exception and compression lat_long_obj, time (utc)
+        self.LastLatLong = None, None
+        
         
     
     #----------------------------------------------------------------------
@@ -54,9 +59,38 @@ class GpsReader(threading.Thread):
             
             else:
                 
-                #msg = "?truckid={0}&lat={1}&lng={2}&time={3}".format()                
-                                
-                self.messages[ts] = latLng
+                last_ll, lastTime = self.LastLatLong
+                
+                if last_ll is None:
+                    
+                    self.LastLatLong = latLng, ts
+                    self.messages[ts] = latLng
+                    
+                else:
+                    
+                    #check for exception and compression settings   
+                    last_lat = last_ll["latitude"]  
+                    last_lng = last_ll["longitude"]
+                    
+                    this_lat = latLng["latitude"]
+                    this_lng = latLng["longitude"]
+                    
+                    #get distance between latitude and longitude in m
+                    metresDifference =  GpsReader.getDistanceBetweenLatLong(this_lat, this_lng,last_lat,last_lng)                    
+                    secondsSinceLastValue = int( ts) -  int(lastTime)                    
+                   
+                    wait_time_secs = config.GPS_WAIT_TIME_SECONDS
+                    metres_trigger_val = config.GPS_MOVEMENT_DETECTION_METRES
+                    
+                    if (metresDifference >= metres_trigger_val) or (secondsSinceLastValue >= wait_time_secs):
+                        
+                        #add this new value and the previous value to the list (so we get "trend advise" like functionallity)
+                        self.messages[lastTime] = last_ll
+                        self.messages[ts] = latLng
+                        
+                    self.LastLatLong = latLng, ts
+                
+                
                 print ('lat:{0} lng:{1}'.format(  latLng['latitude'],latLng['longitude']))      
                 
                   
@@ -92,7 +126,7 @@ class GpsReader(threading.Thread):
             
         return retObj
     
-    def read_gps_microstack(self):
+    def read_gps_microstack(self):     
         
         #need to edit this to actually  return microstack node stuff
         
@@ -113,3 +147,27 @@ class GpsReader(threading.Thread):
             retObj['ErrorMsg'] = str(sys.exc_info()[0])
             
         return retObj
+
+   
+    @staticmethod
+    def getDistanceBetweenLatLong(lattitude_1, longitude_1, lattitude_2, longitude_2):
+                
+        # approximate radius of earth in km
+        R = 6373.0
+        
+        lat1 = radians(abs(lattitude_1))
+        lon1 = radians(abs(longitude_1))
+        lat2 = radians(abs(lattitude_2))
+        lon2 = radians(abs(longitude_2))
+        
+        dlon = lon2 - lon1
+        dlat = lat2 - lat1
+        
+        a = sin(dlat / 2)**2 + cos(lat1) * cos(lat2) * sin(dlon / 2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        
+        distance = (R * c) * 1000
+        
+        #print("Result:", distance)
+        
+        return distance        

@@ -34,6 +34,7 @@ class NanoSoftReader:
         # make sure the cache files are empty to start with (may not want to do this???)
         open(config.CAN_DATA_FILE, 'w').close()
         open(config.OTHER_DATA_FILE, 'w').close()
+        open(config.GPS_DATA_FILE, 'w').close()
 
         # Create the CAN Reader Threads
         self.can0 = CAN_reader.CANReceiver(config.CAN0_NAME, config.CAN0_BITRATE, self.event, 1,True)#can0 is always active
@@ -290,6 +291,8 @@ class NanoSoftReader:
 
   
    
+   
+  
     def post_gps_data(self):
         
         print('posting other data')
@@ -299,13 +302,70 @@ class NanoSoftReader:
         # extract all the unique timestamps from each message dictionary
         timestamps = sorted(set(list(gps_messages.keys())))
             
-        new_msg_string = ""
+        gps_base_msg =  "?truckid={0}&lat={1}&lng={2}&time={3}&i={4}&a={5}&s={6}"        
+        post_msg = ""
         
-        for key, value in d.items():
+        for key, value in gps_messages.items():
             
-            print (value)
+            dt = time.strftime('%d/%b/%y %H:%M:%S', time.localtime(int(key)))
+            dt = str.replace(dt,' ','%20')              
+                        
+            lat = value["latitude"]
+            lng = value["longitude"]
+            
+            msg = gps_base_msg.format(config.DEVICE_ID,lat,lng,dt,"0","0","0")
+            post_msg = post_msg + msg + ",\n"        
         
         
+        if os.stat(config.GPS_DATA_FILE).st_size > 0:
+            
+            print("Data already exists in cache file")
+            lines_to_read = []
+
+            # Data exists in the cache file, add the new_message_string to the end of it
+            self.cache_gps_data(post_msg)
+
+            # Now read N lines of data from the beginning of the file, and remove those lines
+            with open(config.GPS_DATA_FILE) as f, open(config.CACHE_FILE_PATH + 'tmp_other_cache.txt', 'w') as out:
+
+                # read the top MAX_CACHE_READ_LINES to array
+                for x in range(config.MAX_CACHE_READ_LINES):
+                    line = next(f, None)
+                    if line is None:        # end of file
+                        break
+
+                    lines_to_read.append(line)
+
+                # write the rest of the lines to a temp file
+                for line in f:
+                    out.write(line)
+
+            # rename the temp file as the cache file
+            os.remove(config.GPS_DATA_FILE)
+            os.rename(config.CACHE_FILE_PATH + 'tmp_other_cache.txt', config.GPS_DATA_FILE)
+
+            # join the array of lines together to form the message_str
+            post_msg = "".join(lines_to_read)
+        
+        
+        try:
+            # Attempt to post data if string is not empty
+            if post_msg:
+                
+                response = requests.post(config.GPS_RECEIVER_API, data=post_msg, headers=config.REQUEST_HEADERS)
+
+                if (response.status_code == 200):
+                    print(' - success')
+                else:
+                    print(' - failed')
+                    print('status code: ', response.status_code)
+                    # write msg_str to file
+                    self.cache_gps_data(post_msg)
+
+        except:
+            print("Unexpected error:", sys.exc_info()[0])   
+            self.cache_gps_data(post_msg)
+            pass
         
     # ----------------------------------------------------------------------
     # Function to fetch data messages from the sub-threads and write data to 
@@ -337,11 +397,11 @@ class NanoSoftReader:
         other_data_file.write(msg_string)
         other_data_file.close()
 
-    def cache_gps_data(elf,msg_string):
+    def cache_gps_data(self, msg_string):
         """Caches data to a file"""
         
         print ("saving gps data to file")
-        gps_data_file = open(config.GPS_DATA_FILE_, 'a+')
+        gps_data_file = open(config.GPS_DATA_FILE, 'a+')
         gps_data_file.write(msg_string)
         gps_data_file.close()        
     
@@ -408,6 +468,7 @@ class NanoSoftReader:
     
                 self.post_CAN_data()
                 self.post_other_data() 
+                self.post_gps_data()
 
                 # sleep
                 time.sleep(config.API_POST_TIMER)
