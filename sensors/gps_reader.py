@@ -61,12 +61,13 @@ class GpsReader(threading.Thread):
             
             else:
                 
-                last_ll, dont_use = self.LastLatLong
+                last_ll, last_ll_time = self.LastLatLong
                 
                 if last_ll is None:
                     
                     self.LastLatLong = latLng, ts
-                    self.messages[ts] = latLng
+                    self.messages[ts] = latLng   
+                    last_ll_time = ts
                     
                 else:
                     
@@ -79,7 +80,7 @@ class GpsReader(threading.Thread):
                     
                     #get distance between latitude and longitude in m
                     metresDifference =  GpsReader.getDistanceBetweenLatLong(this_lat, this_lng,last_lat,last_lng)                    
-                    secondsSinceLastValue = int( ts) -  int(lastTime)                    
+                    secondsSinceLastValue = int( ts) -  int(last_ll_time)                    
                    
                     wait_time_secs = config.GPS_WAIT_TIME_SECONDS
                     metres_trigger_val = config.GPS_MOVEMENT_DETECTION_METRES
