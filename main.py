@@ -26,6 +26,7 @@ import nanotracker_config as config
 class NanoSoftReader:
     def __init__(self):              
         
+        #this is a test comment for github branch management
         
         # Create an event object used to send events to sub-threads
         self.event = threading.Event()
