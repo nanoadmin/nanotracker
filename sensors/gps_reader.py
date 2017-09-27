@@ -46,10 +46,10 @@ class GpsReader(threading.Thread):
             ts = str(time.time()).split(".")[0]
             
             if self.isSingleCan:
-                print('is single CAN')
+                #print('is single CAN')
                 latLng = self.read_gps_skpang()
             else:
-                print('is dual CAN')
+                #print('is dual CAN')
                 latLng = self.read_gps_microstack()
             
             isError = latLng['isError']                
@@ -115,7 +115,7 @@ class GpsReader(threading.Thread):
                     'ErrorMsg':''})
         try:
             
-            lat,lng = skpang_gps.getLatLong()
+            rand_str,lat,lng = skpang_gps.getLatLong()
             
             print(str(skpang_gps.getLatLong()))
             
