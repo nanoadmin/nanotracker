@@ -52,7 +52,7 @@ class NanoSoftReader:
         self.volt.start()
 
         # Create the accelerometer Reader Thread
-        self.acc = acc_reader.AccReader(self.event, 1)
+        self.acc = acc_reader.AccReader(self.event, 1, config.ACC_READER_ADDRESS)
         self.acc.start()
         
         # Create the GPS Reader Thread

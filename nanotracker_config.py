@@ -48,6 +48,7 @@ MAX_CACHE_READ_LINES = 1000   # the number of lines in the cache file to read fo
 VOLTFACTOR_BATTERY = 14.90/20283
 VOLTFACTOR_PI = 5.1/17495
 
+ACC_READER_ADDRESS = 0x53 #dual can seems to be 0x53, single can 0x48. Need to confirm this behavior though
 
 REQUEST_HEADERS = {
     'cache-control': "no-cache",
