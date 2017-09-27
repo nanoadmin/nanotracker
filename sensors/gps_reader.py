@@ -61,7 +61,7 @@ class GpsReader(threading.Thread):
             
             else:
                 
-                last_ll, lastTime = self.LastLatLong
+                last_ll, dont_use = self.LastLatLong
                 
                 if last_ll is None:
                     
@@ -84,14 +84,17 @@ class GpsReader(threading.Thread):
                     wait_time_secs = config.GPS_WAIT_TIME_SECONDS
                     metres_trigger_val = config.GPS_MOVEMENT_DETECTION_METRES
                     
+                    print ("metresDifference: {0} metres_trigger_val:{1} secondsSinceLastValue:{2} wait_time_secs{3}".format(str(metresDifference),str(metres_trigger_val),str(secondsSinceLastValue),str(wait_time_secs)))
+                    
                     if (metresDifference >= metres_trigger_val) or (secondsSinceLastValue >= wait_time_secs):
                         
                         #add this new value and the previous value to the list (so we get "trend advise" like functionallity)
                         self.messages[lastTime] = last_ll
                         self.messages[ts] = latLng
                         
-                    self.LastLatLong = latLng, ts
+                        self.LastLatLong = latLng, ts
                 
+                lastTime = ts                       
                 
                 print ('lat:{0} lng:{1}'.format(  latLng['latitude'],latLng['longitude']))      
                 
