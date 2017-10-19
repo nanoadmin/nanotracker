@@ -18,8 +18,8 @@ CAN_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"# old/de
 DATA_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"
 GPS_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/dataaccess"
 
-GPS_WAIT_TIME_SECONDS = 10 #amount of time to wait before sending another GPS message despite the fact it hasnt moved
-GPS_MOVEMENT_DETECTION_METRES = 0 # distance the GPS device needs to move before storing new value
+GPS_WAIT_TIME_SECONDS = 600 #amount of time to wait before sending another GPS message despite the fact it hasnt moved
+GPS_MOVEMENT_DETECTION_METRES = 20 # distance the GPS device needs to move before storing new value
 
 API_POST_TIMER = 5  # number of seconds between each post request to the api
 
