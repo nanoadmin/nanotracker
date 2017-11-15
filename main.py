@@ -113,13 +113,13 @@ class NanoSoftReader:
 
             # check if there is can0 data for this timestamp
             if ts in can0_messages:
-                new_msg_string += "can:Zagro125\n"
+                new_msg_string += "can:{0}\n".format(config.CAN0_STANDARD)
                 for msg in can0_messages[ts]:
                     new_msg_string += str(msg) + "\n"
 
                     # check if there is can1 data for this timestamp
-            if ts in can1_messages:
-                new_msg_string += "can:Zagro500\n"
+            if ts in can1_messages:                
+                new_msg_string += "can:{0}\n".format(config.CAN1_STANDARD)
                 for msg in can1_messages[ts]:
                     new_msg_string += str(msg) + "\n"
 
