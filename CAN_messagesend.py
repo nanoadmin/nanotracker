@@ -15,21 +15,19 @@ from threading import Thread
 PID_REQUEST         = 0x1CEA0000
 PID_REPLY           = 0x7E8
 
-time.sleep(0.33)
+IS_DEBUG = True
+
+if not IS_DEBUG:
+    print('waiting 10 seconds before starting to send data on the CAN network')
+    time.sleep(10)
+
 print('Ready')
 
-try:
-    bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
-except OSError:
-    print('Cannot find PiCAN board.')
-    exit()
-
-
-while True:   
+while True:
 
     # Main loop
     try:
-        
+
         bus = can.interface.Bus(channel='can0', bustype='socketcan_native')
 
         SEND_REQUESTS = {
@@ -43,19 +41,16 @@ while True:
                 msg = can.Message(arbitration_id=PID_REQUEST,data=element,extended_id=True)
                 bus.send(msg)
 
-                time.sleep(0.3)
+                if IS_DEBUG:
+                    print(msg)
 
+                time.sleep(0.3)
 
     except KeyboardInterrupt:
         #Catch keyboard interrupt
         #os.system("sudo /sbin/ip link set can0 down")
         print('\n\rKeyboard interrtupt')
-        return        
-        
+        exit()
+
     except:
         print ("Unexpected error:", sys.exc_info()[0])
-
-
-        
-        
-
