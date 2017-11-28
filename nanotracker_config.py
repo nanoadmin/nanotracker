@@ -77,5 +77,5 @@ REQUEST_HEADERS = {
 # sudo apt-get install gpsd gpsd-clients python-gps
 
 #modbus install material 
-# pip install  -U pymodbus
+# sudo -H pip install  -U pymodbus
 
