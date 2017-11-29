@@ -1,13 +1,12 @@
-
 ############################################################################
 #
-# reads from a modbus gateway (Modbus TCP to 2-port CAN Bus Gateway by ICP)
+# Reads from a modbus gateway (Modbus TCP to 2-port CAN Bus Gateway by ICP)
 #
-# sends this data over virtualised CAN network (vcan0 and vcan1)
+# Sends this data over virtualised CAN network (vcan0 and vcan1)
 #
-# this has to be run as python2.X as will not work in 3+
+# This has to be run as python2.X as will not work in 3+
 #
-#                                                                  Nanosoft 
+#                                                             Nanosoft - dg
 #############################################################################
 
 import struct
@@ -18,10 +17,17 @@ import can
 import os
 import math
 
+##############################
+#          CONSTANTS
+##############################
 
 #modbus register locations for the input register start locations for CAN A and CAN B
 REGISTER_LOCATION_CANA = 0X0000
 REGISTER_LOCATION_CANB = 0X1000
+
+MODBUS_GATEWAY_IPADDRESS = "10.10.10.70"
+
+
 
 class CustomModbusRequest(ModbusRequest):    
 
@@ -51,19 +57,6 @@ class CustomModbusRequest(ModbusRequest):
             return self.doException(merror.IllegalAddress)
         values = context.getValues(self.function_code, self.address, self.count)
         return CustomModbusResponse(values)
-
-
-def hex4(val):
-    
-    padded = str.format('0x{:04X}', val).split('x')[-1]
-    
-    return padded
-
-def hex2(val):
-    
-    padded = str.format('0x{:02X}', val).split('x')[-1]
-    
-    return padded
 
 
 def send_can_msg(canbus_client, arbitration_id, can_data, extended_id  ):
@@ -134,16 +127,16 @@ while True:
         #configure the modbus and canbus clients 
         canbusv0_client = can.interface.Bus(channel="vcan0", bustype='socketcan')
         canbusv1_client = can.interface.Bus(channel="vcan1", bustype='socketcan')
-        modbus_client =  ModbusClient('10.10.10.70')         
+        modbus_client =  ModbusClient(MODBUS_GATEWAY_IPADDRESS)         
         
         
         while True:
             
             #read the can data from modbus and write to vcan0
-            readModValsSendToVCAN(modbus_client, 0x0000, canbusv0_client)
+            readModValsSendToVCAN(modbus_client, REGISTER_LOCATION_CANA , canbusv0_client)
             time.sleep(0.01)      
             #read the can data from modbus and write to vcan1
-            readModValsSendToVCAN(modbus_client, 0x1000, canbusv1_client)
+            readModValsSendToVCAN(modbus_client, REGISTER_LOCATION_CANB, canbusv1_client)
             time.sleep(0.01)                 
                 
                 
