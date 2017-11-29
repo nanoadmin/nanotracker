@@ -87,8 +87,6 @@ def getCANMessageFromModResponse(modbus_response):
     
     arbitration_id = int(reg2*(math.pow(256,0)) + reg1*(math.pow(256,2)))
     
-    #arbitration_id = hex(arbitration_id)
-    
     can_data_squashed = modbus_response.registers[3:7]
     
     can_data = [ int(hex(can_data_squashed[0])[2:4],16),int(hex(can_data_squashed[0])[4:6],16)
@@ -99,7 +97,6 @@ def getCANMessageFromModResponse(modbus_response):
     return  arbitration_id, can_data, extended_id  
         
 
-#arbitration_id, data, extended_id
 
 def readModValsSendToVCAN(modbus_client, register_location, canbus_client):
     
@@ -124,34 +121,31 @@ def readModValsSendToVCAN(modbus_client, register_location, canbus_client):
 #The main loop 
 while True:
     
-    
-    #try:       
-        
-        
-    #bring up both the vcan0 and vcan1 CAN interfaces    
-    os.system("sudo modprobe vcan ")
-    os.system("sudo ip link add dev vcan0 type vcan")
-    os.system("sudo ip link set up vcan0")
-    os.system("sudo ip link add dev vcan1 type vcan")
-    os.system("sudo ip link set up vcan1")        
-          
-    
-    #configure the modbus and canbus clients 
-    canbusv0_client = can.interface.Bus(channel="vcan0", bustype='socketcan')
-    canbusv1_client = can.interface.Bus(channel="vcan1", bustype='socketcan')
-    modbus_client =  ModbusClient('10.10.10.70') 
-    
-    
-    
-    while True:
-        
-        #read the can data from modbus and write to vcan0
-        readModValsSendToVCAN(modbus_client, 0x0000, canbusv0_client)
-        time.sleep(0.01)      
-        #read the can data from modbus and write to vcan1
-        readModValsSendToVCAN(modbus_client, 0x1000, canbusv1_client)
-        time.sleep(0.01)                 
+    try:                   
             
+        #bring up both the vcan0 and vcan1 CAN interfaces    
+        os.system("sudo modprobe vcan ")
+        os.system("sudo ip link add dev vcan0 type vcan")
+        os.system("sudo ip link set up vcan0")
+        os.system("sudo ip link add dev vcan1 type vcan")
+        os.system("sudo ip link set up vcan1")        
+              
+        
+        #configure the modbus and canbus clients 
+        canbusv0_client = can.interface.Bus(channel="vcan0", bustype='socketcan')
+        canbusv1_client = can.interface.Bus(channel="vcan1", bustype='socketcan')
+        modbus_client =  ModbusClient('10.10.10.70')         
+        
+        
+        while True:
+            
+            #read the can data from modbus and write to vcan0
+            readModValsSendToVCAN(modbus_client, 0x0000, canbusv0_client)
+            time.sleep(0.01)      
+            #read the can data from modbus and write to vcan1
+            readModValsSendToVCAN(modbus_client, 0x1000, canbusv1_client)
+            time.sleep(0.01)                 
                 
-    #except:
-        #print "exception in main lool, restarting"
+                
+    except:
+        print "exception in main lool, restarting"
