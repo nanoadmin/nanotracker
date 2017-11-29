@@ -66,18 +66,14 @@ def hex2(val):
     return padded
 
 
-def send_can_msg(can_channel, arbitration_id, can_data, extended_id  ):
-    
-    #self.bus = can.interface.Bus(channel="vcan0", bustype='socketcan_native')
-    #maybe we need to move this outside of the method
-    bus = can.interface.Bus(channel=can_channel, bustype='socketcan_native')
+def send_can_msg(canbus_client, arbitration_id, can_data, extended_id  ):
     
     msg = can.Message(arbitration_id=arbitration_id,
                       data=can_data,
                       extended_id=extended_id)
     try:
-        bus.send(msg)
-        print "Message sent on {}".format(bus.channel_info)
+        canbus_client.send(msg)
+        print "Message sent on {}".format(canbus_client.channel_info)
     except can.CanError:
         print "Message NOT sent"
 
@@ -89,18 +85,23 @@ def getCANMessageFromModResponse(modbus_response):
     
     extended_id = (reg1 != 0)
     
-    arbitration_id = int(reg2*(math.pow(256,0)) + reg1*(math.pow(256,1)))
+    arbitration_id = int(reg2*(math.pow(256,0)) + reg1*(math.pow(256,2)))
     
-    arbitration_id = hex(arbitration_id)
+    #arbitration_id = hex(arbitration_id)
     
-    can_data = modbus_response.registers[3:7]
+    can_data_squashed = modbus_response.registers[3:7]
+    
+    can_data = [ int(hex(can_data_squashed[0])[2:4],16),int(hex(can_data_squashed[0])[4:6],16)
+                ,int(hex(can_data_squashed[1])[2:4],16),int(hex(can_data_squashed[1])[4:6],16)
+                ,int(hex(can_data_squashed[2])[2:4],16),int(hex(can_data_squashed[2])[4:6],16)
+                ,int(hex(can_data_squashed[3])[2:4],16),int(hex(can_data_squashed[3])[4:6],16)]
     
     return  arbitration_id, can_data, extended_id  
         
 
 #arbitration_id, data, extended_id
 
-def readModValsSendToVCAN(modbus_client, register_location, can_channel):
+def readModValsSendToVCAN(modbus_client, register_location, canbus_client):
     
     request = CustomModbusRequest(register_location)
     
@@ -117,34 +118,40 @@ def readModValsSendToVCAN(modbus_client, register_location, can_channel):
         #get the CAN values 
         arbitration_id, can_data, extended_id = getCANMessageFromModResponse(result)
         
-        send_can_msg(can_channel, arbitration_id, can_data, extended_id  )    
+        send_can_msg(canbus_client, arbitration_id, can_data, extended_id  )    
 
 
 #The main loop 
 while True:
     
     
-    try:
-        
-        #bring up both the vcan0 and vcan1 CAN interfaces    
-        os.system("sudo modprobe vcan ")
-        os.system("sudo ip link add dev vcan0 type vcan")
-        os.system("sudo ip link set up vcan0")
-        os.system("sudo ip link add dev vcan1 type vcan")
-        os.system("sudo ip link set up vcan1")
+    #try:       
         
         
-        client =  ModbusClient('10.10.10.70') 
+    #bring up both the vcan0 and vcan1 CAN interfaces    
+    os.system("sudo modprobe vcan ")
+    os.system("sudo ip link add dev vcan0 type vcan")
+    os.system("sudo ip link set up vcan0")
+    os.system("sudo ip link add dev vcan1 type vcan")
+    os.system("sudo ip link set up vcan1")        
+          
+    
+    #configure the modbus and canbus clients 
+    canbusv0_client = can.interface.Bus(channel="vcan0", bustype='socketcan')
+    canbusv1_client = can.interface.Bus(channel="vcan1", bustype='socketcan')
+    modbus_client =  ModbusClient('10.10.10.70') 
+    
+    
+    
+    while True:
         
-        while True:
-            
-            #read the can data from modbus and write to vcan0
-            readModValsSendToVCAN(client, 0x0000, "vcan0")
-            time.sleep(0.01)      
-            #read the can data from modbus and write to vcan1
-            readModValsSendToVCAN(client, 0x1000, "vcan1")
-            time.sleep(0.01)                 
+        #read the can data from modbus and write to vcan0
+        readModValsSendToVCAN(modbus_client, 0x0000, canbusv0_client)
+        time.sleep(0.01)      
+        #read the can data from modbus and write to vcan1
+        readModValsSendToVCAN(modbus_client, 0x1000, canbusv1_client)
+        time.sleep(0.01)                 
             
                 
-    except:
-        print "exception in main lool, restarting"
+    #except:
+        #print "exception in main lool, restarting"
