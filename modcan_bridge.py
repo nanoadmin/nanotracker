@@ -37,7 +37,7 @@ class CustomModbusRequest(ModbusRequest):
         
         self.address = address
         
-        #the length of the message wwe want to read
+        #the length of the message we want to read
         self.count = 0x09 
         #the ID of ""this client""
         self.unit_id = 0x01 
@@ -73,19 +73,29 @@ def send_can_msg(canbus_client, arbitration_id, can_data, extended_id  ):
 
 def getCANMessageFromModResponse(modbus_response):
     
+    reg0 = modbus_response.registers[0]
     reg1 = modbus_response.registers[1]
     reg2 = modbus_response.registers[2]
     
     extended_id = (reg1 != 0)
     
+    dataLength = reg0 & 15    
+    
     arbitration_id = int(reg2*(math.pow(256,0)) + reg1*(math.pow(256,2)))
     
-    can_data_squashed = modbus_response.registers[3:7]
+    can_data = []
     
-    can_data = [ int(hex(can_data_squashed[0])[2:4],16),int(hex(can_data_squashed[0])[4:6],16)
-                ,int(hex(can_data_squashed[1])[2:4],16),int(hex(can_data_squashed[1])[4:6],16)
-                ,int(hex(can_data_squashed[2])[2:4],16),int(hex(can_data_squashed[2])[4:6],16)
-                ,int(hex(can_data_squashed[3])[2:4],16),int(hex(can_data_squashed[3])[4:6],16)]
+    can_data_reg_locn = 3
+    
+    for i in xrange(1, 8, 2):
+        
+        reg = modbus_response.registers[can_data_reg_locn]
+        
+        can_data_reg_locn += 1
+        
+        if i <= dataLength: can_data.append( reg >> 8  )
+        if ( i + 1 ) <= dataLength:can_data.append( reg &  255)
+        
     
     return  arbitration_id, can_data, extended_id  
         
