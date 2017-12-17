@@ -1,0 +1,61 @@
+;	
+; adv_ioport driver
+;
+
+[Version]
+Signature="$WINDOWS NT$"
+Class=Advantech_Device
+ClassGuid={AD000001-98AE-405a-885A-BD99226EFC0C}
+Provider=%ProviderName%
+DriverVer=01/04/2017,1.4.0.0
+CatalogFile=adv_ioport.cat
+
+[ClassInstall32]
+Addreg=Class_AddReg
+
+[Class_AddReg]
+HKR,,,,%CLASSNAME%
+
+[SourceDisksFiles]
+adv_ioport.sys  = 1,,
+
+[SourceDisksNames]
+1 = %DiskName%,,,""
+
+[SourceDisksNames.amd64]
+1 = %DiskName%,,,""
+
+[DestinationDirs]
+DefaultDestDir = 12
+
+[Manufacturer]
+%ProviderName%=Standard,NTamd64
+
+[Standard]
+%SVCDESC%=adv_ioport_Device, adv_ioport
+
+[Standard.NTamd64]
+%SVCDESC%=adv_ioport_Device, adv_ioport
+
+[adv_ioport_Device.NT]
+CopyFiles=Drivers_Dir
+
+[Drivers_Dir]
+adv_ioport.sys
+
+[adv_ioport_Device.NT.Services]
+AddService = adv_ioport,0x00000002, adv_ioport_Service_Inst
+
+[adv_ioport_Service_Inst]
+DisplayName    = %SvcDesc%
+ServiceType    = 1               ; SERVICE_KERNEL_DRIVER
+StartType      = 3               ; SERVICE_DEMAND_START 
+ErrorControl   = 1               ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\%FileName%
+
+[Strings]
+ProviderName = "Advantech"
+DiskName = "Advantech Installation Disk"
+CLASSNAME = "External Devices"
+SVCDESC = "I/O Driver"
+FileName = "adv_ioport.sys"

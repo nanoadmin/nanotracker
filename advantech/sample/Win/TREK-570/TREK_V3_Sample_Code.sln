@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_ControlPanel", "TREK_V3_Sample_Code_ControlPanel\TREK_V3_Sample_Code_ControlPanel\TREK_V3_Sample_Code_ControlPanel.csproj", "{B096A506-6E73-40DF-84E9-75240BAC493E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_DIO", "TREK_V3_Sample_Code_DIO\TREK_V3_Sample_Code_DIO\TREK_V3_Sample_Code_DIO.csproj", "{90268AA5-A4FE-448D-BC50-AB25D0D8F804}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_GSensor", "TREK_V3_Sample_Code_GSensor\TREK_V3_Sample_Code_GSensor\TREK_V3_Sample_Code_GSensor.csproj", "{154E3C81-F9F5-4742-82B8-67274D422FE2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_PeripheralCtrl", "TREK_V3_Sample_Code_PeripheralCtrl\TREK_V3_Sample_Code_PeripheralCtrl\TREK_V3_Sample_Code_PeripheralCtrl.csproj", "{31747F42-D999-405B-A261-C0269012E794}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_VCIL", "TREK_V3_Sample_Code_VCIL\TREK_V3_Sample_Code_VCIL\TREK_V3_Sample_Code_VCIL.csproj", "{F7E0DB79-0EF5-478B-8754-EC85A3B7C306}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_VPM", "TREK_V3_Sample_Code_VPM\TREK_V3_Sample_Code_VPM\TREK_V3_Sample_Code_VPM.csproj", "{D88F60B1-0576-47F7-8028-E5205640F255}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_Watch_Dog", "TREK_V3_Sample_Code_Watch_Dog\TREK_V3_Sample_Code_Watch_Dog\TREK_V3_Sample_Code_Watch_Dog.csproj", "{2F8F60EE-ADAE-4354-8BB8-2C4E1D95B7C7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_EEPROM", "TREK_V3_Sample_Code_EEPROM\TREK_V3_Sample_Code_EEPROM\TREK_V3_Sample_Code_EEPROM.csproj", "{FBAF9BE0-2981-4FFC-9BE7-0BF91D303BD6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_RearView", "TREK_V3_Sample_Code_RearView\TREK_V3_Sample_Code_RearView\TREK_V3_Sample_Code_RearView.csproj", "{77ED7088-D532-4490-9F1A-0CD31B62BEBD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_TemperatureSensor", "TREK_V3_Sample_Code_TemperatureSensor\TREK_V3_Sample_Code_TemperatureSensor.csproj", "{8D2C9956-6D59-4732-962A-1D2508C5F803}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B096A506-6E73-40DF-84E9-75240BAC493E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B096A506-6E73-40DF-84E9-75240BAC493E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B096A506-6E73-40DF-84E9-75240BAC493E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B096A506-6E73-40DF-84E9-75240BAC493E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{90268AA5-A4FE-448D-BC50-AB25D0D8F804}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90268AA5-A4FE-448D-BC50-AB25D0D8F804}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90268AA5-A4FE-448D-BC50-AB25D0D8F804}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90268AA5-A4FE-448D-BC50-AB25D0D8F804}.Release|Any CPU.Build.0 = Release|Any CPU
+		{154E3C81-F9F5-4742-82B8-67274D422FE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{154E3C81-F9F5-4742-82B8-67274D422FE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{154E3C81-F9F5-4742-82B8-67274D422FE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{154E3C81-F9F5-4742-82B8-67274D422FE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31747F42-D999-405B-A261-C0269012E794}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31747F42-D999-405B-A261-C0269012E794}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31747F42-D999-405B-A261-C0269012E794}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31747F42-D999-405B-A261-C0269012E794}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7E0DB79-0EF5-478B-8754-EC85A3B7C306}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7E0DB79-0EF5-478B-8754-EC85A3B7C306}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7E0DB79-0EF5-478B-8754-EC85A3B7C306}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7E0DB79-0EF5-478B-8754-EC85A3B7C306}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D88F60B1-0576-47F7-8028-E5205640F255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D88F60B1-0576-47F7-8028-E5205640F255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D88F60B1-0576-47F7-8028-E5205640F255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D88F60B1-0576-47F7-8028-E5205640F255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2F8F60EE-ADAE-4354-8BB8-2C4E1D95B7C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2F8F60EE-ADAE-4354-8BB8-2C4E1D95B7C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2F8F60EE-ADAE-4354-8BB8-2C4E1D95B7C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2F8F60EE-ADAE-4354-8BB8-2C4E1D95B7C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FBAF9BE0-2981-4FFC-9BE7-0BF91D303BD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FBAF9BE0-2981-4FFC-9BE7-0BF91D303BD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FBAF9BE0-2981-4FFC-9BE7-0BF91D303BD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FBAF9BE0-2981-4FFC-9BE7-0BF91D303BD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{77ED7088-D532-4490-9F1A-0CD31B62BEBD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{77ED7088-D532-4490-9F1A-0CD31B62BEBD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{77ED7088-D532-4490-9F1A-0CD31B62BEBD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{77ED7088-D532-4490-9F1A-0CD31B62BEBD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

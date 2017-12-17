@@ -1,0 +1,21 @@
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_GSensor", "TREK_V3_Sample_Code_GSensor\TREK_V3_Sample_Code_GSensor.csproj", "{A9C8E467-406B-4C45-B046-E8C04E21F841}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A9C8E467-406B-4C45-B046-E8C04E21F841}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9C8E467-406B-4C45-B046-E8C04E21F841}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9C8E467-406B-4C45-B046-E8C04E21F841}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A9C8E467-406B-4C45-B046-E8C04E21F841}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9C8E467-406B-4C45-B046-E8C04E21F841}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9C8E467-406B-4C45-B046-E8C04E21F841}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

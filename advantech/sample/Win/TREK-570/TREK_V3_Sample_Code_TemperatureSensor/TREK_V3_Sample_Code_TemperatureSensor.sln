@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TREK_V3_Sample_Code_TemperatureSensor", "TREK_V3_Sample_Code_TemperatureSensor.csproj", "{8D2C9956-6D59-4732-962A-1D2508C5F803}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D2C9956-6D59-4732-962A-1D2508C5F803}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
