@@ -738,13 +738,14 @@ static void set_read_mode()
 	printf("Success\n");
 }
 
-int main()
+int main(int argc, char *argv[])
 {
 	
 	USHORT result;
 	int op;
 
 	char path[256] = "/dev/ttyA0";
+	
 	if(argc > 1)
 	{
 		sprintf(path, "%s", argv[1]);
