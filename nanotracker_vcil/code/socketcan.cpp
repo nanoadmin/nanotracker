@@ -740,6 +740,8 @@ static void set_read_mode()
 
 int main(int argc, char *argv[])
 {
+		
+	printf("VCIL SDK Sample -- library version:%s\n", library_version);
 	
 	USHORT result;
 	int op;
@@ -769,12 +771,15 @@ int main(int argc, char *argv[])
 		return -1;
 	}	
 	
-	
+	printf("initiating CAN connection");
+		
 	if( page_init() < 0 )
 		return 0;
 		
 	if( can_read_enable() < 0)
 		return 0;
+	
+	printf("setting CAN speeds");
 	
 	if( (result = SUSI_IMC_CAN_SetBitTimingSilence(1, CAN_SPEED_125K)) != IMC_ERR_NO_ERROR )
 	{
@@ -788,7 +793,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}	
 
-	while(true)
+	while(false)
 	{
 		CLEAR_SCREEN();
 		show_welcome_title();
