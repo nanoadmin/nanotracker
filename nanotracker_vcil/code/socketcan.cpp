@@ -771,7 +771,7 @@ int main(int argc, char *argv[])
 		return -1;
 	}	
 	
-	printf("initiating CAN connection");
+	printf("initiating CAN connection\n\n");
 		
 	if( page_init() < 0 )
 		return 0;
@@ -779,7 +779,7 @@ int main(int argc, char *argv[])
 	if( can_read_enable() < 0)
 		return 0;
 	
-	printf("setting CAN speeds");
+	printf("setting CAN speeds\n\n");
 	
 	if( (result = SUSI_IMC_CAN_SetBitTimingSilence(1, CAN_SPEED_125K)) != IMC_ERR_NO_ERROR )
 	{
@@ -793,7 +793,7 @@ int main(int argc, char *argv[])
 		return 0;
 	}	
 
-	while(false)
+	while(true)
 	{
 		CLEAR_SCREEN();
 		show_welcome_title();
