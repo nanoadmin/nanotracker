@@ -49,6 +49,15 @@ static void *can_read_thread(void *p)
 		IMC_CAN_MSG_OBJECT message;
 		while( (result = SUSI_IMC_CAN_Read(&message)) == IMC_ERR_NO_ERROR)
 		{
+			
+			int s;
+			int nbytes;
+			struct sockaddr_can addr;
+			struct can_frame frame;
+			struct ifreq ifr;
+			
+			const char *ifname = "vcan0";
+			
 			printf("<CAN,%d>id=%lx,", message.can_bus_number, message.id);
 			if(message.message_type & CAN_MESSAGE_EXTENDED)
 			{
