@@ -2,14 +2,14 @@ TARGET = imc_susi_vcil_demo
 SOURCES = VCILSample.cpp firmware.cpp module_control.cpp can.cpp j1939.cpp obd2.cpp j1708.cpp j1587.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
-INC = -I../../../../headers/
+INC = -I headers/
 
 ifdef DEBUG
 CXXFLAGS = $(INC) -g -Wall -ansi
 else
 CXXFLAGS = $(INC) -Wall -ansi
 endif
-LDFLAGS = -L../../../../bin/TREK570_Linux/ -Wl,-rpath=.
+LDFLAGS = -L libs -Wl,-rpath=.
 LIBS = -pthread -lrt -lvcil
 
 all: $(TARGET)
