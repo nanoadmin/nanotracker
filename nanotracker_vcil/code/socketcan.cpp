@@ -740,6 +740,35 @@ static void set_read_mode()
 
 int main()
 {
+	
+	USHORT result;
+	int op;
+
+	char path[256] = "/dev/ttyA0";
+	if(argc > 1)
+	{
+		sprintf(path, "%s", argv[1]);
+	}
+	printf("Open path:%s\n", path);
+
+	if( (result = SUSI_IMC_VCIL_InitializeEx(path, 921600)) != IMC_ERR_NO_ERROR )
+	{
+		printf("SUSI_IMC_VCIL_Initialize. error code=0x%04x\n", result);
+		printf("\nUsage: %s [path...]\r\n", argv[0]);
+		printf("\nPress ENTER to continue.\n");
+		WAIT_ENTER();
+		return -1;
+	}
+
+	if( (result = SUSI_IMC_VCIL_GetLibVersion((BYTE *)library_version)) != IMC_ERR_NO_ERROR )
+	{
+		printf("SUSI_IMC_VCIL_GetLibVersion fail. error code=0x%04x\n", result);
+		printf("\nPress ENTER to continue. ");
+		WAIT_ENTER();
+		return -1;
+	}
+	
+	
 	int op;
 	
 	if( page_init() < 0 )
