@@ -767,10 +767,8 @@ int main(int argc, char *argv[])
 		printf("\nPress ENTER to continue. ");
 		WAIT_ENTER();
 		return -1;
-	}
+	}	
 	
-	
-	int op;
 	
 	if( page_init() < 0 )
 		return 0;
