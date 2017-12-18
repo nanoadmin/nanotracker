@@ -52,7 +52,7 @@ static void show_menu(void)
 	printf("\nEnter your choice: ");
 }
 
-int main(int argc, char *argv[])
+int vcil_main(int argc, char *argv[])
 {
 	USHORT result;
 	int op;

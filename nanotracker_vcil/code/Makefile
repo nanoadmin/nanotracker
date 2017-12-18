@@ -1,5 +1,5 @@
-TARGET = imc_susi_vcil_demo
-SOURCES = VCILSample.cpp firmware.cpp module_control.cpp can.cpp j1939.cpp obd2.cpp j1708.cpp j1587.cpp
+TARGET = nano_vcil_socketc_can
+SOURCES = VCILSample.cpp firmware.cpp module_control.cpp can.cpp j1939.cpp obd2.cpp j1708.cpp j1587.cpp socketcan.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 
 INC = -I headers/
