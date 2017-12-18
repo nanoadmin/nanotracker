@@ -738,15 +738,15 @@ static void set_read_mode()
 	printf("Success\n");
 }
 
-void can_main()
+int main()
 {
 	int op;
 	
 	if( page_init() < 0 )
-		return ;
+		return 0;
 		
 	if( can_read_enable() < 0)
-		return;
+		return 0;
 
 	while(true)
 	{
@@ -814,4 +814,6 @@ void can_main()
 	}
 	
 	can_read_disable();	
+
+	return 0;
 }

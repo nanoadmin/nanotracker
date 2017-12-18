@@ -104,7 +104,7 @@ int vcil_main(int argc, char *argv[])
 				module_control_main();
 				break;
 			case VCIL_SAMPLE_CODE_FUNCTION_CAN:
-				can_main();
+				/*main();*/
 				break;
 			case VCIL_SAMPLE_CODE_FUNCTION_J1939:
 				j1939_main();
