@@ -1,0 +1,10 @@
+
+#ifndef _SUSI_IMC_LIGHTSENSOR_API_H
+#define _SUSI_IMC_LIGHTSENSOR_API_H
+
+#include "SUSI_IMC_Types.h"
+
+DLLAPI USHORT SUSI_IMC_LIGHTSENSOR_GetLibVersion( OUT BYTE version[18] );
+DLLAPI USHORT SUSI_IMC_LIGHTSENSOR_GetStatus ( OUT PWORD light_value );
+
+#endif
