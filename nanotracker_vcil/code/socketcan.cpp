@@ -754,6 +754,16 @@ int main(int argc, char *argv[])
 		
 	printf("VCIL SDK Sample -- library version:%s\n", library_version);
 	
+	printf("alter permissions on ttyA0");
+	
+	system("sudo chmod 777 /dev/ttyA0");
+	
+	printf("bring up modprobe and vcan0 + vcan1");
+	
+	system("sudo modprobe vcan");
+	system("sudo ip link add dev vcan0 type vcan");
+	system("sudo ip link set up vcan0");
+
 	USHORT result;
 	int op;
 
