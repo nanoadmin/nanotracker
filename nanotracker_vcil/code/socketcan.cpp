@@ -48,20 +48,31 @@ static void *can_read_thread(void *p)
 		IMC_CAN_MSG_OBJECT message;
 		while( (result = SUSI_IMC_CAN_Read(&message)) == IMC_ERR_NO_ERROR)
 		{
+			string can_cmd = "" +  message.id + "#";
+			
 			printf("<CAN,%d>id=%lx,", message.can_bus_number, message.id);
+									
 			if(message.message_type & CAN_MESSAGE_EXTENDED)
 			{
 				printf("EX,");
 			}
+			
 			if(message.message_type & CAN_MESSAGE_RTR)
 			{
 				printf("RTR\n");
 				continue;
 			}			
+			
 			printf("DLC=%d,", message.buf_len);
+			
 			for(int i=0;i<message.buf_len;i++)
+			{
 				printf("%02x ",message.buf[i]);
-			printf("\n");			
+				can_cmd = can_cmd + message.buf[i];
+			}
+				
+			printf("\n");
+			print(can_cmd);
 		}
 
 		if( result != IMC_CAN_RX_NOT_READY )
