@@ -1,10 +1,21 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 
+#include <net/if.h>
+#include <sys/ioctl.h>
+#include <sys/socket.h>
+
+#include <linux/can.h>
+#include <linux/can/raw.h>
+
+#include "SUSI_IMC.h"
 #include "common.h"
 #include "pthread.h"
-#include "SUSI_IMC.h"
-
-#include <string.h>
+#include "lib.h"
 
 static int polling_mode = 0;
 
