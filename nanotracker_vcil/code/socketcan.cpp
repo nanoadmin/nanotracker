@@ -52,9 +52,9 @@ static void *can_read_thread(void *p)
 		IMC_CAN_MSG_OBJECT message;
 		while( (result = SUSI_IMC_CAN_Read(&message)) == IMC_ERR_NO_ERROR)
 		{
-			std::string can_cmd;
+			char can_cmd[32];
 			
-			can_cmd += strcat( message.id , "#");
+			//can_cmd += strcat( message.id , "#");
 			
 			printf("<CAN,%d>id=%lx,", message.can_bus_number, message.id);
 									
@@ -73,13 +73,18 @@ static void *can_read_thread(void *p)
 			
 			for(int i=0;i<message.buf_len;i++)
 			{
-				std::string buffMsg = message.buf[i];
-				std:cout << buffMsg;
-				can_cmd += buffMsg;
+				printf("%02x ",message.buf[i]);
+				
+				sprintf(can_cmd,"%s%02x",can_cmd,message.buf[i]);
+				
+				//std::string buffMsg = message.buf[i];
+				//std:cout << buffMsg;
+				//can_cmd += buffMsg;
 			}
 				
 			printf("\n");
-			std:cout << can_cmd;
+			//std:cout << can_cmd;
+			printf(can_cmd);
 		}
 
 		if( result != IMC_CAN_RX_NOT_READY )
