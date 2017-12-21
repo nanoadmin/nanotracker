@@ -4,6 +4,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <string>
+#include <iostream>
 
 #include <net/if.h>
 #include <sys/ioctl.h>
@@ -48,7 +50,7 @@ static void *can_read_thread(void *p)
 		IMC_CAN_MSG_OBJECT message;
 		while( (result = SUSI_IMC_CAN_Read(&message)) == IMC_ERR_NO_ERROR)
 		{
-			string can_cmd = "" +  message.id + "#";
+			std::string can_cmd = "" +  message.id + "#";
 			
 			printf("<CAN,%d>id=%lx,", message.can_bus_number, message.id);
 									
