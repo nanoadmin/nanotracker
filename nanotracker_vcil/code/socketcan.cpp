@@ -52,7 +52,7 @@ static void *can_read_thread(void *p)
 		IMC_CAN_MSG_OBJECT message;
 		while( (result = SUSI_IMC_CAN_Read(&message)) == IMC_ERR_NO_ERROR)
 		{
-			char can_cmd[200] = "":
+			char can_cmd[200] = "";
 			
 			sprintf(can_cmd, "candump vcan%i %lx#",  (message.can_bus_number - 1), message.id);
 			
