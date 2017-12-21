@@ -75,7 +75,7 @@ static void *can_read_thread(void *p)
 			}
 				
 			printf("\n");
-			printf(can_cmd);
+			std:cout << can_cmd;
 		}
 
 		if( result != IMC_CAN_RX_NOT_READY )
