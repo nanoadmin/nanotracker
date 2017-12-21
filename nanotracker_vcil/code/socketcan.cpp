@@ -84,9 +84,10 @@ static void *can_read_thread(void *p)
 				//can_cmd += buffMsg;
 			}
 				
+			printf("\n");			
+			printf("command : %s",can_cmd);
 			printf("\n");
-			//std:cout << can_cmd;
-			printf("This is the value: %s",can_cmd);
+			system(can_cmd);
 		}
 
 		if( result != IMC_CAN_RX_NOT_READY )
