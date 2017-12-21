@@ -84,7 +84,7 @@ static void *can_read_thread(void *p)
 				
 			printf("\n");
 			//std:cout << can_cmd;
-			printf("%s",can_cmd);
+			printf("This is the value: %s",can_cmd);
 		}
 
 		if( result != IMC_CAN_RX_NOT_READY )
