@@ -54,7 +54,7 @@ static void *can_read_thread(void *p)
 		{
 			char can_cmd[200] = "";
 			
-			sprintf(can_cmd, "candump vcan%i %lx#",  (message.can_bus_number - 1), message.id);
+			sprintf(can_cmd, "cansend vcan%i %lx#",  (message.can_bus_number - 1), message.id);
 			
 			//can_cmd += strcat( message.id , "#");
 			
@@ -786,9 +786,15 @@ int main(int argc, char *argv[])
 	
 	printf("bring up modprobe and vcan0 + vcan1");
 	
+	// BRING UP THE CANBUS SOCKETS (VIRTUAL)
+	
 	system("sudo modprobe vcan");
+	
 	system("sudo ip link add dev vcan0 type vcan");
 	system("sudo ip link set up vcan0");
+	
+	system("sudo ip link add dev vcan1 type vcan");
+	system("sudo ip link set up vcan1");
 
 	USHORT result;
 	int op;
