@@ -4,8 +4,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
 #include <string>
 #include <iostream>
+#include <sstream>
 
 #include <net/if.h>
 #include <sys/ioctl.h>
