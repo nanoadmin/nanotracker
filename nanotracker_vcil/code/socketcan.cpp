@@ -54,7 +54,7 @@ static void *can_read_thread(void *p)
 		{
 			std::string can_cmd;
 			
-			can_cmd += "" + message.id + "#";
+			can_cmd += strcat( message.id , "#");
 			
 			printf("<CAN,%d>id=%lx,", message.can_bus_number, message.id);
 									
