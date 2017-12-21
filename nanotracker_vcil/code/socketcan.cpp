@@ -69,8 +69,9 @@ static void *can_read_thread(void *p)
 			
 			for(int i=0;i<message.buf_len;i++)
 			{
-				printf("%02x ",message.buf[i]);
-				can_cmd = can_cmd + message.buf[i];
+				std::string buffMsg = sprintf("%02x",message.buf[i]);
+				printf(buffMsg);
+				can_cmd = can_cmd << buffMsg;
 			}
 				
 			printf("\n");
