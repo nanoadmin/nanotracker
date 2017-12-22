@@ -15,9 +15,9 @@ import requests
 #import custom libs
 
 from  sensors import CAN_reader
-from  sensors import temp_reader
-from  sensors import volt_reader
-from  sensors import acc_reader
+#from  sensors import temp_reader
+#from  sensors import volt_reader
+#from  sensors import acc_reader
 from  sensors import gps_reader
 
 
@@ -45,19 +45,20 @@ class NanoSoftReader:
         
         #TODO: uncomment outr below
         # Create the Temp Reader Threadssh pi
-        self.temp = temp_reader.TempReader(self.event, 1)
-        self.temp.start()
+        #self.temp = temp_reader.TempReader(self.event, 1)
+        #self.temp.start()
 
         # Create the Voltage Reader Thread
-        self.volt = volt_reader.VoltReader(self.event, 1,config.VOLTFACTOR_BATTERY,config.VOLTFACTOR_PI)
-        self.volt.start()
+        #self.volt = volt_reader.VoltReader(self.event, 1,config.VOLTFACTOR_BATTERY,config.VOLTFACTOR_PI)
+        #self.volt.start()
 
         # Create the accelerometer Reader Thread
-        self.acc = acc_reader.AccReader(self.event, 1, config.ACC_READER_ADDRESS)
-        self.acc.start()
+        #self.acc = acc_reader.AccReader(self.event, 1, config.ACC_READER_ADDRESS)
+        #self.acc.start()
         
         # Create the GPS Reader Thread
-        self.gps = gps_reader.GpsReader(self.event, 1, not config.IS_DUAL_CAN)
+        #pretend we are "single CAN" so that we use the l80 chip ( for advantech)
+        self.gps = gps_reader.GpsReader(self.event, 1, True)
         self.gps.start()        
         
         self.lastRestartTime = int(time.time())
@@ -206,89 +207,7 @@ class NanoSoftReader:
     # ----------------------------------------------------------------------
     def post_other_data(self):
         
-        print('posting other data')
-
-        temp_messages = self.temp.read_messages()
-        volt_messages = self.volt.read_messages()
-        
-        # extract all the unique timestamps from each message dictionary
-        timestamps = sorted(set(
-            list(volt_messages.keys()) +            
-            list(temp_messages.keys()))) 
-            #list(acc_messages.keys())))
-
-        new_msg_string = ""
-        
-        for ts in timestamps:
-            new_msg_string += "time:" + ts + "\n"
-            new_msg_string += "can:nano1000\n"
-
-            # check if there is a temp for this timestamp
-            if ts in temp_messages:
-                new_msg_string +=  str(temp_messages[ts]) + "\n"
-
-            # check if there is a volt for this timestamp
-            if ts in volt_messages:
-                new_msg_string += str(volt_messages[ts]) + "\n"              
-                   
-           
-
-        # Check to see if there is anything in the cache file
-        if os.stat(config.OTHER_DATA_FILE).st_size > 0:
-            print("Data already exists in cache file")
-            lines_to_read = []
-
-            # Data exists in the cache file, add the new_message_string to the end of it
-            self.cache_other_data(new_msg_string)
-
-            # Now read N lines of data from the beginning of the file, and remove those lines
-            with open(config.OTHER_DATA_FILE) as f, open(config.CACHE_FILE_PATH + 'tmp_other_cache.txt', 'w') as out:
-
-                # read the top MAX_CACHE_READ_LINES to array
-                for x in range(config.MAX_CACHE_READ_LINES):
-                    line = next(f, None)
-                    if line is None:        # end of file
-                        break
-
-                    lines_to_read.append(line)
-
-                # write the rest of the lines to a temp file
-                for line in f:
-                    out.write(line)
-
-            # rename the temp file as the cache file
-            os.remove(config.OTHER_DATA_FILE)
-            os.rename(config.CACHE_FILE_PATH + 'tmp_other_cache.txt', config.OTHER_DATA_FILE)
-
-            # join the array of lines together to form the message_str
-            msg_string = "".join(lines_to_read)
-        else:
-            # Cache file is empty, just send the new_message_str
-            msg_string = new_msg_string
-
-        try:
-            # Attempt to post data if string is not empty
-            if msg_string:
-                post_data = "deviceid:" + config.DEVICE_ID + "\n" + msg_string
-                response = requests.post(config.DATA_RECEIVER_API, data=post_data, headers=config.REQUEST_HEADERS)
-
-                if (response.status_code == 200):
-                    print(' - success')
-                else:
-                    print(' - failed')
-                    print('status code: ', response.status_code)
-                    # write msg_str to file
-                    self.cache_other_data(msg_string)
-
-        except:
-            print("Unexpected error:", sys.exc_info()[0])
-
-            # write msg_str to file
-            self.cache_other_data(msg_string)
-            #raise
-
-            #traceback.print_exc()
-            pass  # don't stop script
+        return 0
 
   
    
@@ -424,24 +343,7 @@ class NanoSoftReader:
             self.event.set()
             self.can1 = CAN_reader.CANReceiver(CAN1_NAME, CAN1_BITRATE, self.event, 1)
             self.can1.start()
-
-        if not self.temp.is_alive():
-            print('ERROR: temp_reader thread not alive, restarting')
-            self.event.set()
-            self.temp = temp_reader.TempReader(self.event, 1)
-            self.temp.start()
-
-        if not self.volt.is_alive():
-            print('ERROR: voltage_reader not alive, restarting')
-            self.event.set()
-            self.volt = volt_reader.VoltReader(self.event, 1)
-            self.volt.start()
-
-        if not self.acc.is_alive():
-            print('ERROR: acc_reader not alive, restarting')
-            self.event.set()
-            self.acc = acc_reader.AccReader(self.event, 1)
-            self.acc.start()
+       
         
         if not self.gps.is_alive():
             print('ERROR: acc_reader not alive, restarting')
@@ -481,10 +383,7 @@ class NanoSoftReader:
             self.event.clear()
             # Wait for other threads to finish
             self.can0.join()
-            self.can1.join()
-            self.temp.join()
-            self.volt.join()
-            self.acc.join()
+            self.can1.join()           
             self.gps.join()
 
             print("threads closed")

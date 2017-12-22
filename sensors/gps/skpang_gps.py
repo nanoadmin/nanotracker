@@ -21,10 +21,11 @@ except:
 
 SHOW_DEMO_DATA = False
 
-PORT = "/dev/ttyS0"
+PORT = "/dev/ttyS3"
 BAUD = 9600
 
 s = serial.Serial(PORT)
+#s = Serial(PORT)
 s.baudrate = BAUD
 s.parity   = serial.PARITY_NONE
 s.databits = serial.EIGHTBITS

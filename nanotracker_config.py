@@ -5,8 +5,8 @@
 #                        #
 ##########################
 
-DEVICE_ID = "auto02"
-CACHE_FILE_PATH = "/home/pi/Desktop/cache_files/" #this directory MUST exist or exceptions will be caused
+DEVICE_ID = "uniqco18"
+CACHE_FILE_PATH = "/home/advantech/Desktop/cache_files/" #this directory MUST exist or exceptions will be caused
 
 CAN_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_can_data.txt"
 OTHER_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_other_data.txt"
@@ -14,9 +14,9 @@ GPS_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_gps_data.txt"
 
 IS_DUAL_CAN = False # if this is the sinlge CAN device then we will mark this as false
                    
-CAN_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"# old/dev port : 8082
-DATA_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/canreceiver"
-GPS_RECEIVER_API = "http://devbox2.nanosoft.com.au:9000/api/dataaccess"
+CAN_RECEIVER_API = "http://devbox3.nanosoft.com.au:9000/api/canreceiver"# old/dev port : 8082
+DATA_RECEIVER_API = "http://devbox3.nanosoft.com.au:9000/api/canreceiver"
+GPS_RECEIVER_API = "http://devbox3.nanosoft.com.au:9000/api/dataaccess"
 
 GPS_WAIT_TIME_SECONDS = 600 #amount of time to wait before sending another GPS message despite the fact it hasnt moved
 GPS_MOVEMENT_DETECTION_METRES = 20 # distance the GPS device needs to move before storing new value
@@ -34,10 +34,10 @@ CAN1_STANDARD = 'Zagro500'
 
 IS_DUAL_CAN = True # if this is the sinlge CAN device then we will mark this as false
 #below, even if the canbus is not going to be used, please give it a summy name and bitrate
-CAN0_NAME = 'can0'
+CAN0_NAME = 'vcan0'
 CAN0_BITRATE = 125000
-CAN1_NAME = 'can1'
-CAN1_BITRATE = 500000
+CAN1_NAME = 'vcan1'
+CAN1_BITRATE = 125000
 
 MAX_CACHE_READ_LINES = 1000   # the number of lines in the cache file to read for posting
 
@@ -79,3 +79,13 @@ REQUEST_HEADERS = {
 #modbus install material 
 # sudo -H pip install  -U pymodbus
 
+#to install pip3 and requests etc
+#
+#  sudo apt-get install python3-pip
+#  
+#  sudo pip3 install requests  
+#  
+#  sudo pip3 install pytyhon-can
+#
+#  sudo pip3 install pyserial  # please note, do NOT accidently install serial, it is pyserial
+#
