@@ -775,14 +775,16 @@ static void set_read_mode()
 	printf("Success\n");
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]) 
 {
 		
-	printf("VCIL SDK Sample -- library version:%s\n", library_version);
+	printf("\n\n\nVCIL SDK Sample -- library version:%s\n", library_version);
 	
-	printf("alter permissions on ttyA0");
-	
+	printf("\nalter permissions on ttyA0 this is for the two CAN networks\n");	
 	system("sudo chmod 777 /dev/ttyA0");
+	
+	printf("\nsudo chmod 777 /dev/ttyS3, this is for GPS\n");
+	system("sudo chmod 777 /dev/ttyS3");
 	
 	printf("bring up modprobe and vcan0 + vcan1");
 	
