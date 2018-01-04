@@ -4,7 +4,7 @@ import datetime
 import can
 import copy
 import os
-
+import sys
     
 ########################################################################
 ## Class to listen for message events and add them to an array
@@ -46,7 +46,9 @@ class CANReceiver(threading.Thread):
         
         self.isEnabled = isEnabled
         
-        # Make sure the interface is running
+        self.isVirtualCAN = ("v" in channel)
+        
+        #Make sure the interface is running
         print("connecting to can interface")                
         if self.isEnabled: 
             self.ReEstablishConnection()
@@ -61,17 +63,19 @@ class CANReceiver(threading.Thread):
         
         print("attempting to establish the connection to the CAN interface: {0}".format(self.channel))
         
-        # brings the socket down
-        osCmdDown = 'sudo ifconfig {0} down'.format(self.channel)
-        print(osCmdDown)
-        os.system(osCmdDown)
+        if self.isVirtualCAN == False:            
+
+            # brings the socket down
+            osCmdDown = 'sudo ifconfig {0} down'.format(self.channel)
+            print(osCmdDown)
+            os.system(osCmdDown)
+            
+            # Make sure the interface is running, brings socket back up 
+            osCmdUp = 'sudo /sbin/ip link set {0} up type can bitrate {1}'.format(self.channel, self.bitrate)
+            print(osCmdUp)
+            os.system(osCmdUp)
         
-        # Make sure the interface is running, brings socket back up 
-        osCmdUp = 'sudo /sbin/ip link set {0} up type can bitrate {1}'.format(self.channel, self.bitrate)
-        print(osCmdUp)
-        os.system(osCmdUp)
-        
-        time.sleep(1)
+            time.sleep(1)
     
         # Initialize the CAN interface object
         self.bus = can.interface.Bus(channel=self.channel, bustype='socketcan_native')
@@ -87,13 +91,13 @@ class CANReceiver(threading.Thread):
             if self.isEnabled:
             
                 try:
-                    
-                    # Get and clear all the messages from the listener
-                    buffered_messages = self.a_listener.get_messages()
+                
+                    # Get and clear all the messages from the listener                    
+                    buffered_messages = self.a_listener.get_messages()                    
                     self.a_listener.clear_messages()
                     
-                    #grabs the unique ID's
-                    unique_ids = list({m.arbitration_id for m in buffered_messages})
+                    #grabs the unique ID's                    
+                    unique_ids = list({m.arbitration_id for m in buffered_messages})                    
                     
                     #iterates through the ID's and gets the first instance of each unique one
                     for i in unique_ids:
@@ -106,7 +110,7 @@ class CANReceiver(threading.Thread):
                         self.unique_messages[date_str].append(loop_msg)    
                     
                 except:
-                    
+                    print("Unexpected error:", sys.exc_info()[0])
                     self.ReEstablishConnection()
                 
             time.sleep(self.timer)

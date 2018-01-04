@@ -13,6 +13,6 @@
 
 cd /home/advantech/Desktop/git_repo/nanotracker/nanotracker_vcil/rclocal/code && sudo ./nano_vcil_socketc_can &
 
-sudo python3 /home/advantech/Desktop/git_repo/nanotracker/main.py & 
+sudo python3 /home/advantech/Desktop/git_repo/nanotracker/main_advantech.py &
 
 exit 0
