@@ -89,3 +89,8 @@ REQUEST_HEADERS = {
 #
 #  sudo pip3 install pyserial  # please note, do NOT accidently install serial, it is pyserial
 #
+#
+# enable auto-starting of broadband connection in ubuntu (for the TREK572):
+#  https://askubuntu.com/questions/82255/how-do-i-permanently-enable-mobile-broadband-on-boot
+#  https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=29676
+#
