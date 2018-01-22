@@ -836,7 +836,7 @@ int main(int argc, char *argv[])
 	
 	printf("setting CAN speeds\n\n");
 	
-	if( (result = SUSI_IMC_CAN_SetBitTimingSilence(1, CAN_SPEED_125K)) != IMC_ERR_NO_ERROR )
+	if( (result = SUSI_IMC_CAN_SetBitTimingSilence(1, CAN_SPEED_500K)) != IMC_ERR_NO_ERROR )
 	{
 		printf("SUSI_IMC_CAN_SetBitTimingSilence fail. error code=0x%04x\n", result);
 		return 0;
