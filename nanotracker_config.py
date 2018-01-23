@@ -67,6 +67,7 @@ REQUEST_HEADERS = {
 # Bring	the	CAN	interface up if	it	is	not	already	done:
 # sudo /sbin/ip link set can0 up type can bitrate 500000 
 
+#sudo apt-get install can-utils
 
 #smbus commands
 # sudo apt-get install i2c-tools libi2c-dev python-dev python3-dev
@@ -85,7 +86,7 @@ REQUEST_HEADERS = {
 #  
 #  sudo pip3 install requests 
 #  
-#  sudo pip3 install pytyhon-can
+#  sudo pip3 install python-can
 #
 #  sudo pip3 install pyserial  # please note, do NOT accidently install serial, it is pyserial
 #
