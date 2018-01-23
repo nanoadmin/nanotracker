@@ -94,3 +94,26 @@ REQUEST_HEADERS = {
 #  https://askubuntu.com/questions/82255/how-do-i-permanently-enable-mobile-broadband-on-boot
 #  https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=29676
 #
+#
+# remot3.it commands
+#
+#  instructions can be foud here : file:///C:/Users/gardda9/Downloads/Installing%20the%20remot3.it%20connectd%20daemon%20on%2032-bit%20Ubuntu%20(1).pdf
+#
+#  wget https://github.com/weaved/installer/raw/master/Raspbian%20deb/1.3-08/connectd_1.3-08e_i386.deb
+#  sudo apt-get install curl
+#  sudo dpkg -i <<package name>>
+#    
+#developerid : RDg4QkMyMzEtRTYxQy00MEZBLThBMDUtQTA5QkQyOTQ0OUU3
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
+#
