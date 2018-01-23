@@ -29,13 +29,13 @@ API_POST_TIMER = 5  # number of seconds between each post request to the api
 #                        #
 ##########################
 
-CAN0_STANDARD = 'Zagro125'
-CAN1_STANDARD = 'Zagro500'
+CAN0_STANDARD = 'Zagro500'
+CAN1_STANDARD = 'Zagro125'
 
 IS_DUAL_CAN = True # if this is the sinlge CAN device then we will mark this as false
 #below, even if the canbus is not going to be used, please give it a summy name and bitrate
 CAN0_NAME = 'vcan0'
-CAN0_BITRATE = 125000
+CAN0_BITRATE = 500000
 CAN1_NAME = 'vcan1'
 CAN1_BITRATE = 125000
 
