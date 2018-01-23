@@ -14,9 +14,9 @@ GPS_DATA_FILE = CACHE_FILE_PATH + DEVICE_ID + "_gps_data.txt"
 
 IS_DUAL_CAN = False # if this is the sinlge CAN device then we will mark this as false
                    
-CAN_RECEIVER_API = "http://devbox3.nanosoft.com.au:9000/api/canreceiver"# old/dev port : 8082
-DATA_RECEIVER_API = "http://devbox3.nanosoft.com.au:9000/api/canreceiver"
-GPS_RECEIVER_API = "http://devbox3.nanosoft.com.au:9000/api/dataaccess"
+CAN_RECEIVER_API = "http://uniqco.nanosoft.com.au:9000/api/canreceiver"# old/dev port : 8082
+DATA_RECEIVER_API = "http://uniqco.nanosoft.com.au:9000/api/canreceiver"
+GPS_RECEIVER_API = "http://uniqco.nanosoft.com.au:9000/api/dataaccess"
 
 GPS_WAIT_TIME_SECONDS = 600 #amount of time to wait before sending another GPS message despite the fact it hasnt moved
 GPS_MOVEMENT_DETECTION_METRES = 20 # distance the GPS device needs to move before storing new value
@@ -83,7 +83,7 @@ REQUEST_HEADERS = {
 #
 #  sudo apt-get install python3-pip
 #  
-#  sudo pip3 install requests  
+#  sudo pip3 install requests 
 #  
 #  sudo pip3 install pytyhon-can
 #
@@ -95,7 +95,7 @@ REQUEST_HEADERS = {
 #  https://www.raspberrypi.org/forums/viewtopic.php?f=63&t=29676
 #
 #
-# remot3.it commands
+#  remot3.it commands
 #
 #  instructions can be foud here : file:///C:/Users/gardda9/Downloads/Installing%20the%20remot3.it%20connectd%20daemon%20on%2032-bit%20Ubuntu%20(1).pdf
 #
@@ -103,7 +103,7 @@ REQUEST_HEADERS = {
 #  sudo apt-get install curl
 #  sudo dpkg -i <<package name>>
 #    
-#developerid : RDg4QkMyMzEtRTYxQy00MEZBLThBMDUtQTA5QkQyOTQ0OUU3
+#  developerid : RDg4QkMyMzEtRTYxQy00MEZBLThBMDUtQTA5QkQyOTQ0OUU3
 #
 #
 #
