@@ -11,6 +11,8 @@
 #
 # By default this script does nothing.
 
+(while :; do nmcli -t nm wwan on; sleep 1; done)&
+
 cd /home/advantech/Desktop/git_repo/nanotracker/nanotracker_vcil/rclocal/code && sudo ./nano_vcil_socketc_can &
 
 sudo python3 /home/advantech/Desktop/git_repo/nanotracker/main_advantech.py &
