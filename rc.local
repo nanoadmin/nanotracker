@@ -13,8 +13,19 @@
 
 (while :; do nmcli -t nm wwan on; sleep 1; done)&
 
+
+sudo chmod 777 /dev/ttyA0
+sudo chmod 777 /dev/ttyS3
+sudo modprobe vcan
+sudo ip link add dev vcan0 type vcan
+sudo ip link set up vcan0
+sudo ip link add dev vcan1 type vcan
+sudo ip link set up vcan1
+
+
 cd /home/advantech/Desktop/git_repo/nanotracker/nanotracker_vcil/rclocal/code && sudo ./nano_vcil_socketc_can &
 
 sudo python3 /home/advantech/Desktop/git_repo/nanotracker/main_advantech.py &
+
 
 exit 0
