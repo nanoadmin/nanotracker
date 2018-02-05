@@ -107,7 +107,7 @@ REQUEST_HEADERS = {
 #  developerid : RDg4QkMyMzEtRTYxQy00MEZBLThBMDUtQTA5QkQyOTQ0OUU3
 #
 #
-#
+# sudo scp nanosoft@daveshouse.nanosoft.com.au:/home/nanosoft/Desktop/rc.local /etc/rc.local
 #
 #
 #
