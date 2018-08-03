@@ -60,6 +60,9 @@ REQUEST_HEADERS = {
 
 
 #NOTES:
+
+#username:@dvant3ch,password:123456
+
 # Download	the	Python-CAN	files	from:
 # https://bitbucket.org/hardbyte/python-can/get/4085cffd2519.zip
 # Unzip	and	install	by
