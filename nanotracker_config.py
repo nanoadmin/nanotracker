@@ -63,6 +63,9 @@ REQUEST_HEADERS = {
 
 #username:@dvant3ch,password:123456
 
+#sudo apt-get install python3-setuptools
+
+
 # Download	the	Python-CAN	files	from:
 # https://bitbucket.org/hardbyte/python-can/get/4085cffd2519.zip
 # Unzip	and	install	by
