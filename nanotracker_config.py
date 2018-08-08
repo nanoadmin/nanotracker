@@ -122,9 +122,15 @@ REQUEST_HEADERS = {
 #
 #
 #
+#to get source code in the correct place: 
 #
-#
-#
+#  124  cd /home/advantech/Desktop/
+#  125  ls -l 
+#  126  mkdir git_repo
+#  127  cd git_repo/
+#  128  ls -l 
+#  129  sudo apt-get install git
+#  130  git clone https://github.com/nanoadmin/nanotracker.git
 #
 #
 #
