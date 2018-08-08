@@ -67,9 +67,11 @@ REQUEST_HEADERS = {
 
 
 # Download	the	Python-CAN	files	from:
-# https://bitbucket.org/hardbyte/python-can/get/4085cffd2519.zip
+#  wget https://bitbucket.org/hardbyte/python-can/get/4085cffd2519.zip --no-check-certificate 
 # Unzip	and	install	by
 # sudo python3 setup.py install
+
+# do not do below cmd -- raspberry pi ONLY
 # Bring	the	CAN	interface up if	it	is	not	already	done:
 # sudo /sbin/ip link set can0 up type can bitrate 500000 
 
@@ -84,7 +86,10 @@ REQUEST_HEADERS = {
 # sudo apt-get install gpsd gpsd-clients python-gps
 
 #modbus install material 
+#sudo apt-get install python-pip
 # sudo -H pip install  -U pymodbus
+
+
 
 #to install pip3 and requests etc
 #
